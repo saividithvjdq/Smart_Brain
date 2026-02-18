@@ -1,5 +1,20 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { Space_Grotesk, Sora } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-heading',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+})
+
+const sora = Sora({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+})
 
 export const metadata: Metadata = {
   title: 'Axon | The Operating System for Your Thoughts',
@@ -24,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${spaceGrotesk.variable} ${sora.variable}`}>
       <body className="antialiased noise">{children}</body>
     </html>
   )

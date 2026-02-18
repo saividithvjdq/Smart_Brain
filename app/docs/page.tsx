@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
-import { Brain, Layers, Lightbulb, Zap, Globe, Code2 } from 'lucide-react'
+import { Layers, Lightbulb, Zap, Globe, Code2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
+import { AxonIcon } from '@/components/ui/icons'
 
 export const metadata: Metadata = {
     title: 'Documentation | Second Brain',
@@ -13,31 +15,36 @@ const architectureLayers = [
         name: 'Client Layer',
         tech: 'Next.js + React + Tailwind + shadcn/ui + Framer Motion',
         features: ['Rich Capture Form', 'Searchable Dashboard', 'Conversational AI Query'],
-        gradient: 'from-blue-500/20 to-cyan-500/20',
+        gradient: 'from-blue-500/20 to-cyan-500/10',
+        accent: 'border-l-blue-500',
     },
     {
         name: 'Auth Layer',
-        tech: 'Supabase Auth (JWT Sessions)',
-        features: ['Secure Row-Level Access', 'Session Management'],
-        gradient: 'from-green-500/20 to-emerald-500/20',
+        tech: 'Firebase Auth (JWT Sessions)',
+        features: ['Secure Access Control', 'Session Management'],
+        gradient: 'from-green-500/20 to-emerald-500/10',
+        accent: 'border-l-green-500',
     },
     {
         name: 'API Layer',
         tech: 'Next.js API Routes + Zod Validation',
         features: ['Optimistic UI', 'HTTP 202 Accepted', 'RESTful Design'],
-        gradient: 'from-yellow-500/20 to-orange-500/20',
+        gradient: 'from-yellow-500/20 to-orange-500/10',
+        accent: 'border-l-yellow-500',
     },
     {
         name: 'DB Layer',
-        tech: 'Supabase PostgreSQL + pgvector',
-        features: ['KnowledgeItem Schema', 'Semantic Embeddings', 'Vector Search'],
-        gradient: 'from-purple-500/20 to-pink-500/20',
+        tech: 'Firebase Firestore',
+        features: ['KnowledgeItem Collection', 'Real-time Sync', 'Cloud Storage'],
+        gradient: 'from-purple-500/20 to-pink-500/10',
+        accent: 'border-l-purple-500',
     },
     {
         name: 'Async AI Layer',
-        tech: 'Supabase Edge Functions + Groq/Gemini',
-        features: ['GPT-4o Summarization', 'Auto-Tagging', 'Embedding Gen'],
-        gradient: 'from-indigo-500/20 to-violet-500/20',
+        tech: 'Groq / Gemini APIs',
+        features: ['Summarization', 'Auto-Tagging', 'Embedding Generation'],
+        gradient: 'from-indigo-500/20 to-violet-500/10',
+        accent: 'border-l-indigo-500',
     },
 ]
 
@@ -46,26 +53,37 @@ const uxPrinciples = [
         title: 'Optimistic Updates',
         description: 'Show changes immediately while processing in background. Never block the user.',
         icon: Zap,
+        color: 'text-amber-400',
+        bg: 'bg-amber-500/10',
     },
     {
         title: 'Progressive Disclosure',
-        description: 'Start simple, reveal complexity as needed. AI features enhance, not overwhelm.',
+        description: 'Start simple, reveal complexity as needed. AI features enhance without overwhelming.',
         icon: Layers,
+        color: 'text-blue-400',
+        bg: 'bg-blue-500/10',
     },
     {
         title: 'Transparency in AI',
         description: 'Always show sources and cite origins. Users should trust but verify.',
         icon: Lightbulb,
+        color: 'text-emerald-400',
+        bg: 'bg-emerald-500/10',
     },
     {
         title: 'Contextual Intelligence',
         description: 'AI adapts to user intent - transform active notes or query entire knowledge base.',
-        icon: Brain,
+        icon: AxonIcon,
+        color: 'text-violet-400',
+        bg: 'bg-violet-500/10',
+        isAxon: true,
     },
     {
         title: 'Infrastructure Mindset',
         description: 'Every feature exposed via API. Build for integration, not isolation.',
         icon: Globe,
+        color: 'text-cyan-400',
+        bg: 'bg-cyan-500/10',
     },
 ]
 
@@ -118,50 +136,79 @@ const apiEndpoints = [
     },
 ]
 
+const methodColors: Record<string, string> = {
+    GET: 'bg-blue-500/15 text-blue-400 border border-blue-500/20',
+    POST: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20',
+    PUT: 'bg-amber-500/15 text-amber-400 border border-amber-500/20',
+    DELETE: 'bg-red-500/15 text-red-400 border border-red-500/20',
+}
+
 export default function DocsPage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="border-b border-white/5 glass-subtle">
-                <div className="max-w-6xl mx-auto px-6 py-8">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                            <Brain className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold">Second Brain Documentation</h1>
-                            <p className="text-muted-foreground">Architecture, Principles, and API Reference</p>
-                        </div>
+            <header className="border-b border-white/[0.06] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
+                <div className="max-w-6xl mx-auto px-6 py-10 relative">
+                    <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-white mb-4 transition-colors">
+                        <AxonIcon size={16} className="text-primary" />
+                        <span>Back to Home</span>
+                    </Link>
+                    <h1 className="text-4xl font-bold mb-2">Documentation</h1>
+                    <p className="text-muted-foreground max-w-xl">
+                        Architecture overview, design principles, and complete API reference for the Axon platform.
+                    </p>
+
+                    {/* Quick nav */}
+                    <div className="flex gap-2 mt-6">
+                        {[
+                            { label: 'Architecture', href: '#architecture' },
+                            { label: 'UX Principles', href: '#ux-principles' },
+                            { label: 'Agent Thinking', href: '#agent-thinking' },
+                            { label: 'API Reference', href: '#api' },
+                            { label: 'Widget', href: '#widget' },
+                        ].map((nav) => (
+                            <a
+                                key={nav.href}
+                                href={nav.href}
+                                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] border border-white/[0.06] text-muted-foreground hover:text-white hover:border-white/[0.12] transition-all"
+                            >
+                                {nav.label}
+                            </a>
+                        ))}
                     </div>
                 </div>
             </header>
 
             <main className="max-w-6xl mx-auto px-6 py-12 space-y-16">
-                {/* Portable Architecture */}
+                {/* Architecture */}
                 <section id="architecture">
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        <Layers className="w-6 h-6 text-indigo-400" />
-                        Portable Architecture
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                            <Layers className="w-4 h-4 text-indigo-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold">Portable Architecture</h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-8 ml-11">
                         Clean separation of concerns with swappable components at each layer.
                     </p>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {architectureLayers.map((layer, index) => (
-                            <Card key={layer.name} className={`p-6 glass bg-gradient-to-r ${layer.gradient}`}>
-                                <div className="flex items-start justify-between flex-wrap gap-4">
+                            <Card key={layer.name} className={`p-5 border-white/[0.06] border-l-2 ${layer.accent} relative overflow-hidden`}>
+                                <div className={`absolute inset-0 bg-gradient-to-r ${layer.gradient} opacity-40`} />
+                                <div className="relative z-10 flex items-start justify-between flex-wrap gap-4">
                                     <div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-sm font-mono text-muted-foreground">({index + 1})</span>
-                                            <h3 className="text-lg font-semibold">{layer.name}</h3>
+                                        <div className="flex items-center gap-2.5 mb-1.5">
+                                            <span className="text-xs font-mono text-muted-foreground/50 bg-white/[0.04] px-1.5 py-0.5 rounded">{String(index + 1).padStart(2, '0')}</span>
+                                            <h3 className="text-base font-bold">{layer.name}</h3>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mb-3">{layer.tech}</p>
-                                        <div className="flex flex-wrap gap-2">
+                                        <p className="text-xs text-muted-foreground mb-3 ml-9 font-mono">{layer.tech}</p>
+                                        <div className="flex flex-wrap gap-1.5 ml-9">
                                             {layer.features.map((feature) => (
-                                                <Badge key={feature} variant="secondary" className="text-xs">
+                                                <span key={feature} className="text-xs px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-muted-foreground">
                                                     {feature}
-                                                </Badge>
+                                                </span>
                                             ))}
                                         </div>
                                     </div>
@@ -173,22 +220,28 @@ export default function DocsPage() {
 
                 {/* UX Principles */}
                 <section id="ux-principles">
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        <Lightbulb className="w-6 h-6 text-amber-400" />
-                        Principles-Based UX
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                            <Lightbulb className="w-4 h-4 text-amber-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold">Principles-Based UX</h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-8 ml-11">
                         Design principles guiding AI interaction patterns throughout the application.
                     </p>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {uxPrinciples.map((principle) => (
-                            <Card key={principle.title} className="p-6 glass">
-                                <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center mb-4">
-                                    <principle.icon className="w-5 h-5 text-indigo-400" />
+                            <Card key={principle.title} className="p-5 border-white/[0.06] hover:border-white/[0.12] transition-all group">
+                                <div className={`w-10 h-10 rounded-xl ${principle.bg} border border-white/[0.06] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                    {principle.isAxon ? (
+                                        <AxonIcon size={18} className={principle.color} />
+                                    ) : (
+                                        <principle.icon className={`w-5 h-5 ${principle.color}`} />
+                                    )}
                                 </div>
-                                <h3 className="font-semibold mb-2">{principle.title}</h3>
-                                <p className="text-sm text-muted-foreground">{principle.description}</p>
+                                <h3 className="font-bold text-sm mb-1.5">{principle.title}</h3>
+                                <p className="text-xs text-muted-foreground leading-relaxed">{principle.description}</p>
                             </Card>
                         ))}
                     </div>
@@ -196,70 +249,92 @@ export default function DocsPage() {
 
                 {/* Agent Thinking */}
                 <section id="agent-thinking">
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        <Brain className="w-6 h-6 text-purple-400" />
-                        Agent Thinking
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                            <AxonIcon size={16} className="text-violet-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold">Agent Thinking</h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-8 ml-11">
                         Autonomous automation that maintains and improves the system over time.
                     </p>
 
-                    <Card className="p-6 glass">
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="font-semibold mb-2">Self-Improving Pipeline</h3>
-                                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                                    <li><span className="text-foreground">On Capture:</span> Item saved immediately → Background job generates summary, tags, and embedding</li>
-                                    <li><span className="text-foreground">Context Engine:</span> Detects intent (query vs transform) → Routes to appropriate processing</li>
-                                    <li><span className="text-foreground">RAG Pipeline:</span> Semantic search → Context composition → LLM generation with citations</li>
-                                    <li><span className="text-foreground">Continuous Improvement:</span> Daily cron re-processes items with better models or prompts</li>
-                                </ol>
-                            </div>
-                            <div>
-                                <h3 className="font-semibold mb-2">Key Automations</h3>
-                                <ul className="space-y-1 text-sm text-muted-foreground">
-                                    <li>• <span className="text-foreground">Auto-Summarization:</span> Every knowledge item gets a concise AI summary</li>
-                                    <li>• <span className="text-foreground">Auto-Tagging:</span> AI suggests relevant tags based on content analysis</li>
-                                    <li>• <span className="text-foreground">Embedding Generation:</span> Semantic vectors for similarity search</li>
-                                    <li>• <span className="text-foreground">Metadata Enrichment:</span> Re-run AI on items with missing or weak metadata</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </Card>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <Card className="p-5 border-white/[0.06]">
+                            <h3 className="font-bold text-sm mb-4">Self-Improving Pipeline</h3>
+                            <ol className="space-y-3 text-sm">
+                                {[
+                                    { step: 'On Capture', desc: 'Item saved immediately. Background job generates summary, tags, and embedding.' },
+                                    { step: 'Context Engine', desc: 'Detects intent (query vs transform). Routes to appropriate processing.' },
+                                    { step: 'RAG Pipeline', desc: 'Semantic search, context composition, LLM generation with citations.' },
+                                    { step: 'Continuous Improvement', desc: 'Daily cron re-processes items with better models or prompts.' },
+                                ].map((item, i) => (
+                                    <li key={i} className="flex gap-3">
+                                        <span className="text-xs font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded h-fit shrink-0">{i + 1}</span>
+                                        <div>
+                                            <span className="font-semibold text-white">{item.step}</span>
+                                            <span className="text-muted-foreground"> - {item.desc}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </Card>
+
+                        <Card className="p-5 border-white/[0.06]">
+                            <h3 className="font-bold text-sm mb-4">Key Automations</h3>
+                            <ul className="space-y-3 text-sm">
+                                {[
+                                    { title: 'Auto-Summarization', desc: 'Every knowledge item gets a concise AI summary' },
+                                    { title: 'Auto-Tagging', desc: 'AI suggests relevant tags based on content analysis' },
+                                    { title: 'Embedding Generation', desc: 'Semantic vectors for similarity search' },
+                                    { title: 'Metadata Enrichment', desc: 'Re-run AI on items with missing or weak metadata' },
+                                ].map((item, i) => (
+                                    <li key={i} className="flex gap-3 items-start">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                                        <div>
+                                            <span className="font-semibold text-white">{item.title}</span>
+                                            <span className="text-muted-foreground"> - {item.desc}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Card>
+                    </div>
                 </section>
 
                 {/* API Reference */}
                 <section id="api">
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        <Code2 className="w-6 h-6 text-green-400" />
-                        API Reference
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <Code2 className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold">API Reference</h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-8 ml-11">
                         Infrastructure mindset: all functionality exposed via API or embeddable widget.
                     </p>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         {apiEndpoints.map((endpoint) => (
-                            <Card key={`${endpoint.method}-${endpoint.path}`} className="p-6 glass overflow-hidden">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <Badge
-                                        variant={endpoint.method === 'GET' ? 'secondary' : 'default'}
-                                        className={endpoint.method === 'GET' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'}
-                                    >
+                            <Card key={`${endpoint.method}-${endpoint.path}`} className="p-5 border-white/[0.06] overflow-hidden">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <Badge className={methodColors[endpoint.method] || ''}>
                                         {endpoint.method}
                                     </Badge>
-                                    <code className="text-sm font-mono">{endpoint.path}</code>
+                                    <code className="text-sm font-mono text-muted-foreground">{endpoint.path}</code>
                                 </div>
                                 <p className="text-sm text-muted-foreground mb-4">{endpoint.description}</p>
 
                                 {endpoint.params && (
-                                    <div className="mb-4">
-                                        <h4 className="text-xs font-medium uppercase text-muted-foreground mb-2">Parameters</h4>
-                                        <div className="space-y-1">
+                                    <div className="mb-3">
+                                        <h4 className="text-[11px] font-bold uppercase text-muted-foreground/60 mb-2 tracking-wider">Parameters</h4>
+                                        <div className="space-y-1.5">
                                             {endpoint.params.map((param) => (
-                                                <div key={param.name} className="text-sm flex gap-2">
-                                                    <code className="text-indigo-400">{param.name}</code>
-                                                    <span className="text-muted-foreground">({param.type}{param.required ? ', required' : ''}) - {param.description}</span>
+                                                <div key={param.name} className="text-xs flex items-baseline gap-2">
+                                                    <code className="text-primary font-medium">{param.name}</code>
+                                                    <span className="text-muted-foreground/50 font-mono">{param.type}</span>
+                                                    {param.required && <span className="text-[10px] text-red-400 bg-red-500/10 px-1 rounded">required</span>}
+                                                    <span className="text-muted-foreground">{param.description}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -267,34 +342,36 @@ export default function DocsPage() {
                                 )}
 
                                 {endpoint.body && (
-                                    <div className="mb-4">
-                                        <h4 className="text-xs font-medium uppercase text-muted-foreground mb-2">Request Body</h4>
-                                        <code className="text-xs bg-white/5 p-2 rounded block overflow-x-auto">{endpoint.body}</code>
+                                    <div className="mb-3">
+                                        <h4 className="text-[11px] font-bold uppercase text-muted-foreground/60 mb-2 tracking-wider">Request Body</h4>
+                                        <code className="text-xs bg-white/[0.03] border border-white/[0.06] p-2.5 rounded-lg block overflow-x-auto font-mono text-muted-foreground">{endpoint.body}</code>
                                     </div>
                                 )}
 
                                 <div>
-                                    <h4 className="text-xs font-medium uppercase text-muted-foreground mb-2">Response</h4>
-                                    <code className="text-xs bg-white/5 p-2 rounded block overflow-x-auto">{endpoint.response}</code>
+                                    <h4 className="text-[11px] font-bold uppercase text-muted-foreground/60 mb-2 tracking-wider">Response</h4>
+                                    <code className="text-xs bg-white/[0.03] border border-white/[0.06] p-2.5 rounded-lg block overflow-x-auto font-mono text-emerald-400/80">{endpoint.response}</code>
                                 </div>
                             </Card>
                         ))}
                     </div>
                 </section>
 
-                {/* Embed Widget */}
+                {/* Widget */}
                 <section id="widget">
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                        <Globe className="w-6 h-6 text-cyan-400" />
-                        Embeddable Widget
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                            <Globe className="w-4 h-4 text-cyan-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold">Embeddable Widget</h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-8 ml-11">
                         Embed the Second Brain search in any website with a simple iframe.
                     </p>
 
-                    <Card className="p-6 glass">
-                        <h3 className="font-semibold mb-4">Embed Code</h3>
-                        <pre className="bg-white/5 p-4 rounded-lg overflow-x-auto text-sm">
+                    <Card className="p-5 border-white/[0.06]">
+                        <h3 className="font-bold text-sm mb-3">Embed Code</h3>
+                        <pre className="bg-white/[0.03] border border-white/[0.06] p-4 rounded-lg overflow-x-auto text-sm font-mono text-muted-foreground">
                             {`<iframe
   src="https://your-domain.com/widget"
   width="400"
@@ -306,6 +383,17 @@ export default function DocsPage() {
                     </Card>
                 </section>
             </main>
+
+            {/* Footer */}
+            <footer className="border-t border-white/[0.06] py-8">
+                <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <AxonIcon size={16} className="text-primary" />
+                        <span className="text-sm font-semibold">Axon</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Built with Next.js, Firebase, and AI</p>
+                </div>
+            </footer>
         </div>
     )
 }

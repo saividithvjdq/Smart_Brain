@@ -27,7 +27,7 @@ import {
 import { AxonIcon, VoiceWaveform, FloatAnimation } from '@/components/ui/icons'
 
 // Smooth easing
-const ease = [0.16, 1, 0.3, 1]
+const ease = [0.16, 1, 0.3, 1] as const
 
 // Navigation
 export function Navbar() {
@@ -60,7 +60,7 @@ export function Navbar() {
                     {/* CTA */}
                     <div className="hidden md:block">
                         <Link href="/dashboard" className="px-5 py-2.5 text-sm font-medium btn-primary rounded-xl">
-                            Start Free Trial
+                            Get Started
                         </Link>
                     </div>
 
@@ -83,7 +83,7 @@ export function Navbar() {
                             <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
                             <hr className="border-border" />
                             <Link href="/dashboard" className="px-4 py-2 text-sm font-medium btn-primary rounded-lg text-center">
-                                Start Free Trial
+                                Get Started
                             </Link>
                         </div>
                     </motion.div>
@@ -159,13 +159,13 @@ export function HeroSection() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1, duration: 0.8, ease }}
-                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-4 sm:mb-6"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight-heading leading-[1.1] mb-4 sm:mb-6 text-hero-glow"
                         >
                             Turn scattered thoughts into
                             <br className="hidden sm:block" />
                             <span className="sm:hidden"> </span>connected knowledge –
                             <br />
-                            <span className="text-primary">10x</span> faster.
+                            <span className="gradient-text-animated">10x</span> faster.
                         </motion.h1>
 
                         {/* Subheadline */}
@@ -211,9 +211,9 @@ export function HeroSection() {
                         >
                             <Link
                                 href="/dashboard"
-                                className="px-6 py-3.5 text-base font-medium btn-primary rounded-xl flex items-center gap-2"
+                                className="px-6 py-3.5 text-base font-medium btn-primary btn-shimmer rounded-xl flex items-center gap-2"
                             >
-                                Start Free Today
+                                Get Started Free
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
                             <button className="px-6 py-3.5 text-base font-medium btn-secondary rounded-xl flex items-center gap-2">
@@ -368,97 +368,90 @@ export function HeroSection() {
     )
 }
 
-// Features Section - Premium gradient icons
-const features = [
-    {
-        icon: Brain,
-        title: 'Smart Capture',
-        description: 'Drop in notes, links, and ideas. AI organizes and connects everything automatically.',
-        gradient: 'from-violet-500 to-purple-600',
-        glow: 'shadow-violet-500/30'
-    },
-    {
-        icon: Search,
-        title: 'Semantic Search',
-        description: 'Find anything with natural language. No more keyword matching—just ask.',
-        gradient: 'from-cyan-500 to-blue-600',
-        glow: 'shadow-cyan-500/30'
-    },
-    {
-        icon: MessageSquare,
-        title: 'Ask Your Brain',
-        description: 'Chat with your knowledge base. Get answers with sources from your own notes.',
-        gradient: 'from-pink-500 to-rose-600',
-        glow: 'shadow-pink-500/30'
-    },
-    {
-        icon: Globe,
-        title: 'Public API',
-        description: 'Embed your brain anywhere. Rate-limited API for external integrations.',
-        gradient: 'from-emerald-500 to-teal-600',
-        glow: 'shadow-emerald-500/30'
-    }
-]
-
+// Features Section - Scalepro Inspired Clean Design
 export function FeaturesSection() {
     const ref = useRef<HTMLDivElement>(null)
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ['start end', 'end start']
-    })
-
-    const y = useTransform(scrollYProgress, [0, 1], ['40px', '-40px'])
 
     return (
-        <section id="features" ref={ref} className="relative py-32 overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 grid-pattern" />
+        <section id="features" ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+            {/* Gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent/10" />
 
             <div className="relative z-10 max-w-6xl mx-auto px-6">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-sm font-medium text-primary mb-4 block uppercase tracking-wider">Features</span>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                        Everything your brain
-                        <br />
-                        <span className="text-muted-foreground">needs to thrive</span>
-                    </h2>
-                </motion.div>
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    {/* Left side - Big headline with logo */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, ease }}
+                    >
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8">
+                            AI-Powered Knowledge
+                            <br />
+                            <span className="text-muted-foreground">Platform for the Modern Era</span>
+                        </h2>
 
-                {/* Feature Cards - Premium Design */}
-                <motion.div
-                    style={{ y }}
-                    className="grid md:grid-cols-2 gap-5"
-                >
-                    {features.map((feature, index) => (
+                        {/* Large geometric logo */}
                         <motion.div
-                            key={feature.title}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1, ease }}
-                            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                            className="group relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all cursor-pointer overflow-hidden"
+                            transition={{ duration: 0.6, delay: 0.3, ease }}
+                            className="mt-8"
                         >
-                            {/* Solid gradient icon box */}
-                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-lg ${feature.glow} group-hover:shadow-xl group-hover:scale-105 transition-all duration-300`}>
-                                <feature.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
-                            </div>
-                            <h3 className="text-lg font-semibold mb-2 group-hover:text-white transition-colors">
-                                {feature.title}
-                            </h3>
-                            <p className="text-muted-foreground text-sm leading-relaxed">
-                                {feature.description}
-                            </p>
+                            <AxonIcon size={120} className="text-white" />
                         </motion.div>
-                    ))}
-                </motion.div>
+                    </motion.div>
+
+                    {/* Right side - Clean feature list */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2, ease }}
+                        className="space-y-8"
+                    >
+                        {[
+                            { title: 'Smart Capture', desc: 'AI organizes your notes, links, and ideas automatically' },
+                            { title: 'Semantic Search', desc: 'Find anything with natural language queries' },
+                            { title: 'Knowledge Chat', desc: 'Get answers sourced from your own notes' },
+                            { title: 'Public API', desc: 'Embed your brain anywhere with rate-limited access' },
+                        ].map((item, i) => (
+                            <motion.div
+                                key={item.title}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: 0.3 + i * 0.1, ease }}
+                                className="group"
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className="w-2 h-2 rounded-full bg-primary mt-2.5 group-hover:scale-150 transition-transform" />
+                                    <div>
+                                        <h3 className="text-xl font-semibold mb-1 group-hover:text-primary transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-muted-foreground">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                        {/* Powered by text */}
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: 0.8 }}
+                            className="text-sm text-muted-foreground pt-8"
+                        >
+                            Powered by <span className="text-white font-medium">Axon</span>
+                        </motion.p>
+                    </motion.div>
+                </div>
             </div>
         </section>
     )
@@ -599,20 +592,25 @@ export function PlatformBenefitsSection() {
 }
 
 // Chat Interfaces Section - HelloAria Style
-// Circular feature menu + WhatsApp chat preview
+// Combined Chat Interfaces + Integrations Section
 export function ChatInterfacesSection() {
-    const features = [
-        { icon: Users, label: 'Circles', position: 'top-0 left-8' },
-        { icon: Brain, label: 'MOM Mode', position: 'top-8 left-1/2 -translate-x-1/2', active: true },
-        { icon: MessageSquare, label: 'Notes', position: 'top-0 right-8' },
-        { icon: Zap, label: 'Voice & Image', position: 'bottom-8 left-4' },
-        { icon: Globe, label: 'Integrations', position: 'bottom-0 right-1/2 translate-x-1/2' },
-        { icon: Check, label: 'To-Do Lists', position: 'bottom-8 left-1/2 -translate-x-8' },
-        { icon: Sparkles, label: 'Reminders', position: 'bottom-8 right-4' },
+    const platforms = [
+        { name: 'WhatsApp', Icon: MessageSquare, status: 'Soon', iconBg: 'bg-gradient-to-br from-green-500 to-green-600', borderColor: 'border-green-500/20' },
+        { name: 'Telegram', Icon: Send, status: 'Soon', iconBg: 'bg-gradient-to-br from-blue-400 to-blue-500', borderColor: 'border-blue-500/20' },
+        { name: 'Web App', Icon: Globe, status: 'Live', iconBg: 'bg-gradient-to-br from-primary to-accent', borderColor: 'border-primary/20' },
+        { name: 'Email', Icon: Mail, status: 'Soon', iconBg: 'bg-gradient-to-br from-orange-500 to-red-500', borderColor: 'border-orange-500/20' },
+        { name: 'API', Icon: Code2, status: 'Live', iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500', borderColor: 'border-purple-500/20' },
+        { name: 'Mobile', Icon: Smartphone, status: 'Soon', iconBg: 'bg-gradient-to-br from-pink-500 to-rose-500', borderColor: 'border-pink-500/20' },
     ]
 
     return (
-        <section className="relative py-24 md:py-32 overflow-hidden">
+        <section id="integrations" className="relative py-24 md:py-32 overflow-hidden">
+            {/* Light beam */}
+            <div className="absolute top-0 left-0 right-0 h-px">
+                <div className="light-beam" />
+                <div className="light-beam-glow -translate-y-8" />
+            </div>
+
             <div className="max-w-6xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <motion.div
@@ -620,14 +618,20 @@ export function ChatInterfacesSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease }}
-                    className="text-center mb-16"
+                    className="text-center mb-12 md:mb-16"
                 >
-                    <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Reminders, todos, team coordination & integrations — <span className="text-white">right where you chat</span>
+                    <span className="text-sm font-medium text-primary mb-4 block uppercase tracking-wider">Integrations</span>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                        Access from anywhere.
+                        <br />
+                        <span className="text-muted-foreground">Right where you chat.</span>
+                    </h2>
+                    <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                        Reminders, todos, team coordination and integrations — your knowledge synchronized across every platform.
                     </p>
                 </motion.div>
 
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                     {/* Left: Circular Feature Menu */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -636,9 +640,7 @@ export function ChatInterfacesSection() {
                         transition={{ duration: 0.8, ease }}
                         className="relative"
                     >
-                        {/* Dark container with rounded corners */}
                         <div className="relative bg-[#0a0a0f] rounded-3xl p-8 sm:p-12 border border-white/5 overflow-hidden">
-                            {/* Circular menu container */}
                             <div className="relative w-full aspect-square max-w-[380px] mx-auto">
                                 {/* Center button - Animated */}
                                 <motion.div
@@ -647,7 +649,6 @@ export function ChatInterfacesSection() {
                                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                                 >
                                     <div className="w-16 h-16 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center relative">
-                                        {/* Pulse rings */}
                                         <motion.div
                                             className="absolute inset-0 rounded-full border-2 border-primary/30"
                                             animate={{ scale: [1, 1.4], opacity: [0.5, 0] }}
@@ -658,10 +659,8 @@ export function ChatInterfacesSection() {
                                     <p className="text-xs text-center mt-2 text-white font-medium">MOM Mode</p>
                                 </motion.div>
 
-                                {/* Circular ring */}
                                 <div className="absolute inset-12 rounded-full border border-white/10" />
 
-                                {/* Feature items around the circle - Fixed positions */}
                                 {[
                                     { icon: Users, label: 'Circles', top: '15%', left: '15%' },
                                     { icon: FileText, label: 'Notes', top: '15%', left: '75%' },
@@ -690,127 +689,179 @@ export function ChatInterfacesSection() {
                         </div>
                     </motion.div>
 
-                    {/* Right: WhatsApp Chat Preview */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2, ease }}
-                        className="relative"
-                    >
-                        {/* WhatsApp-style chat container */}
-                        <div className="bg-gradient-to-br from-green-900/30 to-green-950/50 rounded-3xl p-6 border border-green-500/20 max-w-[320px] ml-auto">
-                            {/* Chat header */}
-                            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
-                                <motion.div
-                                    className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center"
-                                    animate={{ scale: [1, 1.05, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                >
-                                    <AxonIcon size={20} className="text-white" />
-                                </motion.div>
-                                <div>
-                                    <p className="text-sm font-medium text-white">Axon AI</p>
-                                    <div className="flex items-center gap-1">
-                                        <motion.div
-                                            className="w-1.5 h-1.5 rounded-full bg-green-400"
-                                            animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-                                            transition={{ duration: 1.5, repeat: Infinity }}
-                                        />
-                                        <p className="text-xs text-green-400">online</p>
+                    {/* Right: Chat Preview + Platform Cards */}
+                    <div className="space-y-6">
+                        {/* Chat Preview */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2, ease }}
+                            className="relative"
+                        >
+                            <div className="bg-gradient-to-br from-green-900/30 to-green-950/50 rounded-3xl p-6 border border-green-500/20 max-w-[340px] ml-auto">
+                                {/* Chat header */}
+                                <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+                                    <motion.div
+                                        className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center"
+                                        animate={{ scale: [1, 1.05, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                    >
+                                        <AxonIcon size={20} className="text-white" />
+                                    </motion.div>
+                                    <div>
+                                        <p className="text-sm font-medium text-white">Axon AI</p>
+                                        <div className="flex items-center gap-1">
+                                            <motion.div
+                                                className="w-1.5 h-1.5 rounded-full bg-green-400"
+                                                animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                                                transition={{ duration: 1.5, repeat: Infinity }}
+                                            />
+                                            <p className="text-xs text-green-400">online</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Chat messages */}
+                                <div className="space-y-3">
+                                    <motion.div
+                                        className="flex gap-2"
+                                        initial={{ opacity: 0, x: -10 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.4, delay: 0.3 }}
+                                    >
+                                        <div className="bg-[#1a1a1a] rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
+                                            <p className="text-xs text-white/90 flex items-center gap-1.5">
+                                                <FileText className="w-3.5 h-3.5 text-primary" />
+                                                <span className="font-medium">Meeting Minutes Mode Activated</span>
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                I'm ready to capture your meeting. Start recording when ready.
+                                            </p>
+                                            <p className="text-[10px] text-muted-foreground mt-2 text-right">3:00 PM</p>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        className="flex gap-2 justify-end"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.4, delay: 0.5 }}
+                                    >
+                                        <div className="bg-green-600/30 rounded-2xl rounded-tr-sm p-3 flex items-center gap-2">
+                                            <motion.div
+                                                className="w-8 h-8 rounded-full bg-green-500/30 flex items-center justify-center"
+                                                animate={{ scale: [1, 1.1, 1] }}
+                                                transition={{ duration: 1, repeat: Infinity }}
+                                            >
+                                                <Play className="w-4 h-4 text-green-400" />
+                                            </motion.div>
+                                            <VoiceWaveform />
+                                            <span className="text-[10px] text-green-400">0:45</span>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        className="flex justify-end"
+                                        initial={{ opacity: 0, y: 5 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.3, delay: 0.7 }}
+                                    >
+                                        <div className="bg-primary/20 rounded-full px-3 py-1.5 inline-flex items-center gap-1.5">
+                                            <Lightbulb className="w-3 h-3 text-primary" />
+                                            <span className="text-[10px] text-primary">Try switching apps!</span>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                {/* Input area */}
+                                <div className="mt-4 pt-3 border-t border-white/10">
+                                    <div className="bg-[#1a1a1a] rounded-full px-4 py-2 flex items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">Message Axon...</span>
+                                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                                            <Send className="w-4 h-4 text-white" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Chat messages */}
-                            <div className="space-y-3">
-                                {/* Bot message */}
-                                <motion.div
-                                    className="flex gap-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.3 }}
-                                >
-                                    <div className="bg-[#1a1a1a] rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
-                                        <p className="text-xs text-white/90 flex items-center gap-1.5">
-                                            <FileText className="w-3.5 h-3.5 text-primary" />
-                                            <span className="font-medium">Meeting Minutes Mode Activated</span>
-                                        </p>
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                            I'm ready to capture your meeting. Start recording when ready.
-                                        </p>
-                                        <p className="text-[10px] text-muted-foreground mt-2 text-right">3:00 PM</p>
+                            {/* Floating platform icons */}
+                            <div className="absolute -right-2 top-1/4 flex flex-col gap-2">
+                                <FloatAnimation delay={0}>
+                                    <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center shadow-lg">
+                                        <MessageSquare className="w-5 h-5 text-white" />
                                     </div>
-                                </motion.div>
-
-                                {/* Voice message preview - Animated */}
-                                <motion.div
-                                    className="flex gap-2 justify-end"
-                                    initial={{ opacity: 0, x: 10 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.5 }}
-                                >
-                                    <div className="bg-green-600/30 rounded-2xl rounded-tr-sm p-3 flex items-center gap-2">
-                                        <motion.div
-                                            className="w-8 h-8 rounded-full bg-green-500/30 flex items-center justify-center"
-                                            animate={{ scale: [1, 1.1, 1] }}
-                                            transition={{ duration: 1, repeat: Infinity }}
-                                        >
-                                            <Play className="w-4 h-4 text-green-400" />
-                                        </motion.div>
-                                        <VoiceWaveform />
-                                        <span className="text-[10px] text-green-400">0:45</span>
+                                </FloatAnimation>
+                                <FloatAnimation delay={0.3}>
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg">
+                                        <Send className="w-5 h-5 text-white" />
                                     </div>
-                                </motion.div>
-
-                                {/* Quick tip */}
-                                <motion.div
-                                    className="flex justify-end"
-                                    initial={{ opacity: 0, y: 5 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.3, delay: 0.7 }}
-                                >
-                                    <div className="bg-primary/20 rounded-full px-3 py-1.5 inline-flex items-center gap-1.5">
-                                        <Lightbulb className="w-3 h-3 text-primary" />
-                                        <span className="text-[10px] text-primary">Try switching apps!</span>
+                                </FloatAnimation>
+                                <FloatAnimation delay={0.6}>
+                                    <div className="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center shadow-lg">
+                                        <Mail className="w-5 h-5 text-white" />
                                     </div>
-                                </motion.div>
+                                </FloatAnimation>
                             </div>
+                        </motion.div>
 
-                            {/* Input area hint */}
-                            <div className="mt-4 pt-3 border-t border-white/10">
-                                <div className="bg-[#1a1a1a] rounded-full px-4 py-2 flex items-center justify-between">
-                                    <span className="text-xs text-muted-foreground">Message Axon...</span>
-                                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                                        <Send className="w-4 h-4 text-white" />
+                        {/* Platform Cards Grid */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.4, ease }}
+                            className="grid grid-cols-3 gap-2"
+                        >
+                            {platforms.map((platform, index) => (
+                                <motion.div
+                                    key={platform.name}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.3, delay: 0.5 + index * 0.06 }}
+                                    whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.02] border ${platform.borderColor} cursor-pointer hover:bg-white/[0.04] transition-colors`}
+                                >
+                                    <div className={`w-8 h-8 rounded-lg ${platform.iconBg} flex items-center justify-center`}>
+                                        <platform.Icon className="w-4 h-4 text-white" />
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Floating platform icons - Animated */}
-                        <div className="absolute -right-2 top-1/4 flex flex-col gap-2">
-                            <FloatAnimation delay={0}>
-                                <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center shadow-lg">
-                                    <MessageSquare className="w-5 h-5 text-white" />
-                                </div>
-                            </FloatAnimation>
-                            <FloatAnimation delay={0.3}>
-                                <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg">
-                                    <Send className="w-5 h-5 text-white" />
-                                </div>
-                            </FloatAnimation>
-                            <FloatAnimation delay={0.6}>
-                                <div className="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center shadow-lg">
-                                    <Mail className="w-5 h-5 text-white" />
-                                </div>
-                            </FloatAnimation>
-                        </div>
-                    </motion.div>
+                                    <span className="text-[11px] font-medium text-white">{platform.name}</span>
+                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${platform.status === 'Live'
+                                        ? 'bg-green-500/20 text-green-400'
+                                        : 'bg-white/10 text-muted-foreground'
+                                        }`}>
+                                        {platform.status}
+                                    </span>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
                 </div>
+
+                {/* Bottom CTA */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6, duration: 0.6, ease }}
+                    className="text-center mt-10 md:mt-12"
+                >
+                    <p className="text-sm text-muted-foreground mb-4">
+                        Your productivity tools, simplified into a chat. For focus and flow, everywhere.
+                    </p>
+                    <Link
+                        href="/dashboard"
+                        className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium btn-secondary rounded-xl"
+                    >
+                        <MessageSquare className="w-4 h-4" />
+                        Try on Web
+                        <ArrowRight className="w-4 h-4" />
+                    </Link>
+                </motion.div>
             </div>
         </section>
     )
@@ -875,160 +926,7 @@ export function HowItWorksSection() {
     )
 }
 
-// Integrations Section - HelloAria.io Exact Style
-// Colored icon boxes with gradient card backgrounds
-const integrations = [
-    {
-        name: 'WhatsApp',
-        description: 'Chat with your knowledge base directly from WhatsApp',
-        status: 'Soon',
-        iconBg: 'bg-gradient-to-br from-green-500 to-green-600',
-        cardBg: 'bg-gradient-to-br from-green-950/80 via-green-900/40 to-transparent',
-        borderColor: 'border-green-500/30',
-        Icon: MessageSquare
-    },
-    {
-        name: 'Telegram',
-        description: 'Access Axon via Telegram bot anywhere',
-        status: 'Soon',
-        iconBg: 'bg-gradient-to-br from-blue-400 to-blue-500',
-        cardBg: 'bg-gradient-to-br from-blue-950/80 via-blue-900/40 to-transparent',
-        borderColor: 'border-blue-500/30',
-        Icon: Send
-    },
-    {
-        name: 'Web App',
-        description: 'Full dashboard experience in your browser',
-        status: 'Live',
-        iconBg: 'bg-gradient-to-br from-primary to-accent',
-        cardBg: 'bg-gradient-to-br from-purple-950/80 via-purple-900/40 to-transparent',
-        borderColor: 'border-primary/30',
-        Icon: Globe
-    },
-    {
-        name: 'Email',
-        description: 'Query and capture via email commands',
-        status: 'Soon',
-        iconBg: 'bg-gradient-to-br from-orange-500 to-red-500',
-        cardBg: 'bg-gradient-to-br from-orange-950/80 via-orange-900/40 to-transparent',
-        borderColor: 'border-orange-500/30',
-        Icon: Mail
-    },
-    {
-        name: 'API',
-        description: 'Public API for custom integrations',
-        status: 'Live',
-        iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500',
-        cardBg: 'bg-gradient-to-br from-purple-950/80 via-purple-900/40 to-transparent',
-        borderColor: 'border-purple-500/30',
-        Icon: Code2
-    },
-    {
-        name: 'Mobile App',
-        description: 'Native iOS and Android apps',
-        status: 'Soon',
-        iconBg: 'bg-gradient-to-br from-pink-500 to-rose-500',
-        cardBg: 'bg-gradient-to-br from-pink-950/80 via-pink-900/40 to-transparent',
-        borderColor: 'border-pink-500/30',
-        Icon: Smartphone
-    },
-]
 
-export function IntegrationsSection() {
-    return (
-        <section id="integrations" className="relative py-24 md:py-32 overflow-hidden">
-            {/* Light beam */}
-            <div className="absolute top-0 left-0 right-0 h-px">
-                <div className="light-beam" />
-                <div className="light-beam-glow -translate-y-8" />
-            </div>
-
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease }}
-                    className="text-center mb-12 md:mb-16"
-                >
-                    <span className="text-sm font-medium text-primary mb-4 block uppercase tracking-wider">Integrations</span>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                        Access from anywhere.
-                        <br />
-                        <span className="text-muted-foreground">Unified in one place.</span>
-                    </h2>
-                    <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Use Axon from WhatsApp, web, or API. Your knowledge synchronized across every platform you use.
-                    </p>
-                </motion.div>
-
-                {/* Integration Cards Grid - HelloAria Style */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                    {integrations.map((integration, index) => (
-                        <motion.div
-                            key={integration.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.08, ease }}
-                            whileHover={{ y: -4, scale: 1.02, transition: { duration: 0.2 } }}
-                            className={`group p-5 md:p-6 rounded-2xl ${integration.cardBg} border ${integration.borderColor} backdrop-blur-sm cursor-pointer transition-all hover:border-opacity-60`}
-                        >
-                            {/* Colored Icon Box - HelloAria Style */}
-                            <div className={`w-12 h-12 rounded-xl ${integration.iconBg} flex items-center justify-center mb-4 shadow-lg`}>
-                                <integration.Icon className="w-6 h-6 text-white" />
-                            </div>
-
-                            {/* Title + Status Badge */}
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-base font-semibold text-white">
-                                    {integration.name}
-                                </h3>
-                                {integration.status === 'Soon' && (
-                                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-muted-foreground font-medium">
-                                        Soon
-                                    </span>
-                                )}
-                                {integration.status === 'Live' && (
-                                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 font-medium">
-                                        Live
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Description */}
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                {integration.description}
-                            </p>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Bottom CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4, duration: 0.6, ease }}
-                    className="text-center mt-10 md:mt-12"
-                >
-                    <p className="text-sm text-muted-foreground mb-4">
-                        Your productivity tools, simplified into a chat. For focus and flow, everywhere.
-                    </p>
-                    <Link
-                        href="/dashboard"
-                        className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-sm font-medium btn-secondary rounded-xl"
-                    >
-                        <MessageSquare className="w-4 h-4" />
-                        Try on Web
-                        <ArrowRight className="w-4 h-4" />
-                    </Link>
-                </motion.div>
-            </div>
-        </section>
-    )
-}
 
 // CTA Section
 export function CTASection() {
@@ -1053,7 +951,7 @@ export function CTASection() {
                 className="relative z-10 max-w-3xl mx-auto px-6 text-center"
             >
                 <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                    Ready to upgrade
+                    Ready to amplify
                     <br />
                     <span className="gradient-text-purple">your mind?</span>
                 </h2>
@@ -1063,7 +961,7 @@ export function CTASection() {
                 </p>
                 <Link
                     href="/dashboard"
-                    className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium btn-primary rounded-xl"
+                    className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium btn-primary btn-shimmer rounded-xl"
                 >
                     Get Started Free
                     <ArrowRight className="w-5 h-5" />
@@ -1080,10 +978,10 @@ export function Footer() {
             <div className="max-w-6xl mx-auto px-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                            <Zap className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                            <AxonIcon size={16} className="text-white" />
                         </div>
-                        <span className="font-semibold">Axon</span>
+                        <span className="font-semibold font-heading">Axon</span>
                     </div>
 
                     <div className="flex items-center gap-8 text-sm text-muted-foreground">
