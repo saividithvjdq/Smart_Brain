@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { queryBrainSchema } from '@/lib/validations'
 import { RAG } from '@/lib/ai/rag'
 
-// Rate limiter (simple in-memory for demo)
+// Rate limiter (simple in-memory)
 const requestCounts = new Map<string, { count: number; resetAt: number }>()
-const RATE_LIMIT = 10 // requests per minute
-const RATE_WINDOW = 60 * 1000 // 1 minute
+const RATE_LIMIT = 10
+const RATE_WINDOW = 60 * 1000
 
 function getRateLimitHeaders(remaining: number, resetAt: number) {
     return {
@@ -36,17 +36,13 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number; rese
 // GET /api/public/brain/query - Public API endpoint
 export async function GET(request: NextRequest) {
     try {
-        // Rate limiting
         const ip = request.headers.get('x-forwarded-for') || 'unknown'
         const { allowed, remaining, resetAt } = checkRateLimit(ip)
 
         if (!allowed) {
             return NextResponse.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
-                {
-                    status: 429,
-                    headers: getRateLimitHeaders(remaining, resetAt)
-                }
+                { status: 429, headers: getRateLimitHeaders(remaining, resetAt) }
             )
         }
 
@@ -58,7 +54,6 @@ export async function GET(request: NextRequest) {
                 {
                     error: 'Missing query parameter',
                     usage: 'GET /api/public/brain/query?q=your question here',
-                    example: '/api/public/brain/query?q=What did I learn about React?'
                 },
                 { status: 400, headers: getRateLimitHeaders(remaining, resetAt) }
             )
@@ -72,9 +67,7 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        // For public endpoint, use a shared demo brain or specific public space
         const userId = 'public-demo'
-
         const result = await RAG.query(question, userId)
 
         return NextResponse.json(
@@ -90,7 +83,7 @@ export async function GET(request: NextRequest) {
                     query: question,
                     timestamp: new Date().toISOString(),
                     source_count: result.sources.length,
-                }
+                },
             },
             { headers: getRateLimitHeaders(remaining, resetAt) }
         )

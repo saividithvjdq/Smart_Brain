@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/lib/firebase/auth-context'
 import {
     Search,
     FileText,
@@ -45,6 +46,7 @@ const typeFilters = [
 ]
 
 export default function SearchPage() {
+    const { getIdToken } = useAuth()
     const [query, setQuery] = useState('')
     const [items, setItems] = useState<KnowledgeItem[]>([])
     const [loading, setLoading] = useState(true)
@@ -53,24 +55,27 @@ export default function SearchPage() {
     const [tagFilters, setTagFilters] = useState<string[]>([])
     const [sortBy, setSortBy] = useState<'latest' | 'oldest'>('latest')
 
-    useEffect(() => {
-        fetchItems()
-    }, [])
-
-    const fetchItems = async () => {
+    const fetchItems = useCallback(async () => {
         setLoading(true)
         try {
-            const res = await fetch('/api/knowledge')
+            const token = await getIdToken()
+            const res = await fetch('/api/knowledge', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+            })
             if (res.ok) {
                 const data = await res.json()
-                setItems(data)
+                setItems(data.items || [])
             }
         } catch {
             console.error('Failed to fetch items')
         } finally {
             setLoading(false)
         }
-    }
+    }, [getIdToken])
+
+    useEffect(() => {
+        fetchItems()
+    }, [fetchItems])
 
     const allTags = [...new Set(items.flatMap((item) => item.tags || []))]
 

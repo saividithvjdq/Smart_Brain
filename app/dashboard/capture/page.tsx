@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/lib/firebase/auth-context'
 import {
     FileText,
     Link2,
@@ -61,6 +62,7 @@ const contentTypes = [
 
 export default function CapturePage() {
     const router = useRouter()
+    const { getIdToken } = useAuth()
     const [type, setType] = useState<'note' | 'link' | 'insight'>('note')
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
@@ -88,9 +90,13 @@ export default function CapturePage() {
         if (!content.trim()) return
         setIsAutoTagging(true)
         try {
+            const token = await getIdToken()
             const res = await fetch('/api/ai/auto-tag', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
                 body: JSON.stringify({ content: title + ' ' + content }),
             })
             const data = await res.json()
@@ -111,9 +117,13 @@ export default function CapturePage() {
 
         setIsLoading(true)
         try {
+            const token = await getIdToken()
             const res = await fetch('/api/knowledge', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
                 body: JSON.stringify({
                     title,
                     content,

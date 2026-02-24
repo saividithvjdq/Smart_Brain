@@ -1,10 +1,11 @@
 'use client'
 
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/lib/firebase/auth-context'
 import {
     FileText,
     Link2,
@@ -13,15 +14,33 @@ import {
     Clock,
     Sparkles,
     ArrowUpRight,
-    Brain,
     Search,
-    MessageSquare
+    MessageSquare,
+    PlusCircle,
+    Inbox
 } from 'lucide-react'
 import { AxonIcon } from '@/components/ui/icons'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-// Animated counter component
+interface Stats {
+    total: number
+    notes: number
+    links: number
+    insights: number
+    tags: number
+    recentCount: number
+}
+
+interface RecentItem {
+    id: string
+    title: string
+    type: 'note' | 'link' | 'insight'
+    tags: string[]
+    summary?: string
+    created_at: string
+}
+
 function AnimatedCounter({ target, duration = 1.5 }: { target: number; duration?: number }) {
     const count = useMotionValue(0)
     const rounded = useTransform(count, (v) => Math.round(v))
@@ -42,48 +61,69 @@ function AnimatedCounter({ target, duration = 1.5 }: { target: number; duration?
     return <span ref={ref}>0</span>
 }
 
-// Stats with gradient accents
-const stats = [
-    { label: 'Total Notes', value: 47, icon: FileText, change: '+12 this week', gradient: 'from-blue-500/20 to-blue-600/5', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
-    { label: 'Links Saved', value: 23, icon: Link2, change: '+5 this week', gradient: 'from-emerald-500/20 to-emerald-600/5', iconBg: 'bg-emerald-500/15', iconColor: 'text-emerald-400' },
-    { label: 'Insights', value: 15, icon: Lightbulb, change: '+3 this week', gradient: 'from-amber-500/20 to-amber-600/5', iconBg: 'bg-amber-500/15', iconColor: 'text-amber-400' },
-    { label: 'AI Queries', value: 89, icon: Sparkles, change: '+28 this week', gradient: 'from-violet-500/20 to-violet-600/5', iconBg: 'bg-violet-500/15', iconColor: 'text-violet-400' },
-]
-
-const recentItems = [
-    {
-        id: '1',
-        title: 'Understanding React Server Components',
-        type: 'note' as const,
-        tags: ['react', 'nextjs', 'frontend'],
-        summary: 'Key insights about RSCs and when to use them over client components for optimal performance.',
-        createdAt: '2 hours ago',
-    },
-    {
-        id: '2',
-        title: 'Linear App Design Patterns',
-        type: 'link' as const,
-        tags: ['design', 'ui', 'inspiration'],
-        summary: 'Beautiful micro-interactions and motion design patterns from Linear app.',
-        createdAt: '5 hours ago',
-    },
-    {
-        id: '3',
-        title: 'AI Agents Architecture',
-        type: 'insight' as const,
-        tags: ['ai', 'architecture', 'mcp'],
-        summary: 'How context engines and RAG work together for intelligent querying.',
-        createdAt: '1 day ago',
-    },
-]
-
 const typeConfig = {
     note: { icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20', label: 'Note' },
     link: { icon: Link2, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Link' },
     insight: { icon: Lightbulb, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', label: 'Insight' },
 }
 
+function timeAgo(dateStr: string): string {
+    const date = new Date(dateStr)
+    const now = new Date()
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+    if (diff < 60) return 'Just now'
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`
+    return date.toLocaleDateString()
+}
+
 export default function DashboardPage() {
+    const { getIdToken } = useAuth()
+    const [stats, setStats] = useState<Stats>({ total: 0, notes: 0, links: 0, insights: 0, tags: 0, recentCount: 0 })
+    const [recentItems, setRecentItems] = useState<RecentItem[]>([])
+    const [loading, setLoading] = useState(true)
+
+    const fetchData = useCallback(async () => {
+        try {
+            const token = await getIdToken()
+            if (!token) return
+
+            const headers = { Authorization: `Bearer ${token}` }
+
+            const [statsRes, itemsRes] = await Promise.all([
+                fetch('/api/dashboard/stats', { headers }),
+                fetch('/api/knowledge?limit=5', { headers }),
+            ])
+
+            if (statsRes.ok) {
+                const statsData = await statsRes.json()
+                setStats(statsData)
+            }
+
+            if (itemsRes.ok) {
+                const itemsData = await itemsRes.json()
+                setRecentItems(itemsData.items || [])
+            }
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error)
+        } finally {
+            setLoading(false)
+        }
+    }, [getIdToken])
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    const statCards = [
+        { label: 'Total Notes', value: stats.notes, icon: FileText, gradient: 'from-blue-500/20 to-blue-600/5', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
+        { label: 'Links Saved', value: stats.links, icon: Link2, gradient: 'from-emerald-500/20 to-emerald-600/5', iconBg: 'bg-emerald-500/15', iconColor: 'text-emerald-400' },
+        { label: 'Insights', value: stats.insights, icon: Lightbulb, gradient: 'from-amber-500/20 to-amber-600/5', iconBg: 'bg-amber-500/15', iconColor: 'text-amber-400' },
+        { label: 'Total Tags', value: stats.tags, icon: Sparkles, gradient: 'from-violet-500/20 to-violet-600/5', iconBg: 'bg-violet-500/15', iconColor: 'text-violet-400' },
+    ]
+
     return (
         <div className="space-y-8 relative">
             {/* Background orbs */}
@@ -97,13 +137,13 @@ export default function DashboardPage() {
                 transition={{ duration: 0.6, ease }}
                 className="relative"
             >
-                <h1 className="text-3xl font-bold mb-1">Welcome back</h1>
+                <h1 className="text-3xl font-bold font-heading mb-1">Welcome back</h1>
                 <p className="text-muted-foreground">Here is an overview of your knowledge base activity.</p>
             </motion.div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, index) => (
+                {statCards.map((stat, index) => (
                     <motion.div
                         key={stat.label}
                         initial={{ opacity: 0, y: 20 }}
@@ -111,21 +151,25 @@ export default function DashboardPage() {
                         transition={{ delay: index * 0.08, duration: 0.6, ease }}
                     >
                         <Card className="p-5 relative overflow-hidden border-white/[0.06] hover:border-white/[0.12] transition-all group cursor-pointer">
-                            {/* Gradient background */}
                             <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
                             <div className="relative z-10">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className={`p-2.5 rounded-xl ${stat.iconBg} border border-white/[0.06]`}>
                                         <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
                                     </div>
-                                    <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
-                                        <TrendingUp className="w-3 h-3" />
-                                        <span className="font-medium">{stat.change}</span>
-                                    </div>
+                                    {stats.recentCount > 0 && (
+                                        <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                                            <TrendingUp className="w-3 h-3" />
+                                            <span className="font-medium">+{stats.recentCount} this week</span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="text-3xl font-bold mb-1 group-hover:text-white transition-colors">
-                                    <AnimatedCounter target={stat.value} />
+                                    {loading ? (
+                                        <div className="w-12 h-8 rounded bg-white/5 animate-pulse" />
+                                    ) : (
+                                        <AnimatedCounter target={stat.value} />
+                                    )}
                                 </div>
                                 <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                             </div>
@@ -139,7 +183,7 @@ export default function DashboardPage() {
                 {/* Recent Items - 2 columns */}
                 <div className="lg:col-span-2 space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold flex items-center gap-2">
+                        <h2 className="text-lg font-bold font-heading flex items-center gap-2">
                             <Clock className="w-4 h-4 text-muted-foreground" />
                             Recent Knowledge
                         </h2>
@@ -152,57 +196,87 @@ export default function DashboardPage() {
                         </Link>
                     </div>
 
-                    <div className="space-y-3">
-                        {recentItems.map((item, index) => {
-                            const config = typeConfig[item.type]
-                            const Icon = config.icon
-
-                            return (
-                                <motion.div
-                                    key={item.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.3 + index * 0.1, duration: 0.6, ease }}
-                                >
-                                    <Card className="p-5 border-white/[0.06] hover:border-primary/20 transition-all cursor-pointer group relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className="flex items-start gap-4 relative z-10">
-                                            <div className={`p-2.5 rounded-xl border ${config.bg}`}>
-                                                <Icon className={`w-5 h-5 ${config.color}`} />
-                                            </div>
-
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1.5">
-                                                    <h3 className="font-semibold truncate group-hover:text-primary transition-colors">
-                                                        {item.title}
-                                                    </h3>
-                                                    <Badge variant="secondary" className={`text-[10px] ${config.bg} ${config.color} border shrink-0`}>
-                                                        {config.label}
-                                                    </Badge>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground line-clamp-1 mb-3">
-                                                    {item.summary}
-                                                </p>
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                    {item.tags.map((tag) => (
-                                                        <span
-                                                            key={tag}
-                                                            className="text-xs px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-muted-foreground"
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                    <span className="text-xs text-muted-foreground/60 ml-auto font-medium">
-                                                        {item.createdAt}
-                                                    </span>
-                                                </div>
-                                            </div>
+                    {loading ? (
+                        <div className="space-y-3">
+                            {[1, 2, 3].map((i) => (
+                                <Card key={i} className="p-5 border-white/[0.06]">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-white/5 animate-pulse" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="w-2/3 h-4 rounded bg-white/5 animate-pulse" />
+                                            <div className="w-full h-3 rounded bg-white/5 animate-pulse" />
                                         </div>
-                                    </Card>
-                                </motion.div>
-                            )
-                        })}
-                    </div>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : recentItems.length === 0 ? (
+                        <Card className="p-12 border-white/[0.06] text-center">
+                            <Inbox className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
+                            <h3 className="font-semibold mb-2">No knowledge items yet</h3>
+                            <p className="text-sm text-muted-foreground mb-4">Start capturing your thoughts, links, and insights.</p>
+                            <Link
+                                href="/dashboard/capture"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
+                            >
+                                <PlusCircle className="w-4 h-4" />
+                                Capture your first thought
+                            </Link>
+                        </Card>
+                    ) : (
+                        <div className="space-y-3">
+                            {recentItems.map((item, index) => {
+                                const config = typeConfig[item.type]
+                                const Icon = config.icon
+
+                                return (
+                                    <motion.div
+                                        key={item.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.3 + index * 0.1, duration: 0.6, ease }}
+                                    >
+                                        <Card className="p-5 border-white/[0.06] hover:border-primary/20 transition-all cursor-pointer group relative overflow-hidden">
+                                            <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="flex items-start gap-4 relative z-10">
+                                                <div className={`p-2.5 rounded-xl border ${config.bg}`}>
+                                                    <Icon className={`w-5 h-5 ${config.color}`} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1.5">
+                                                        <h3 className="font-semibold truncate group-hover:text-primary transition-colors">
+                                                            {item.title}
+                                                        </h3>
+                                                        <Badge variant="secondary" className={`text-[10px] ${config.bg} ${config.color} border shrink-0`}>
+                                                            {config.label}
+                                                        </Badge>
+                                                    </div>
+                                                    {item.summary && (
+                                                        <p className="text-sm text-muted-foreground line-clamp-1 mb-3">
+                                                            {item.summary}
+                                                        </p>
+                                                    )}
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        {item.tags.map((tag) => (
+                                                            <span
+                                                                key={tag}
+                                                                className="text-xs px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-muted-foreground"
+                                                            >
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                        <span className="text-xs text-muted-foreground/60 ml-auto font-medium">
+                                                            {timeAgo(item.created_at)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    </motion.div>
+                                )
+                            })}
+                        </div>
+                    )}
                 </div>
 
                 {/* Sidebar Cards */}
@@ -226,27 +300,28 @@ export default function DashboardPage() {
                                 </div>
                             </div>
 
-                            <div className="relative mb-4">
-                                <input
-                                    type="text"
-                                    placeholder="What did I learn about..."
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] focus:border-primary/40 focus:ring-2 focus:ring-primary/10 outline-none text-sm placeholder:text-muted-foreground/50 transition-all"
-                                />
-                                <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
-                                    <Sparkles className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
+                            <Link href="/dashboard/chat" className="block">
+                                <div className="relative mb-4">
+                                    <div className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-sm text-muted-foreground/50 hover:border-primary/30 transition-all cursor-pointer">
+                                        What did I learn about...
+                                    </div>
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-primary text-white">
+                                        <Sparkles className="w-3.5 h-3.5" />
+                                    </div>
+                                </div>
+                            </Link>
 
                             <div className="space-y-2">
                                 <p className="text-xs text-muted-foreground font-medium">Quick prompts</p>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {['Recent insights', 'React tips', 'AI patterns'].map((prompt) => (
-                                        <button
+                                    {['Recent insights', 'Summarize notes', 'Key takeaways'].map((prompt) => (
+                                        <Link
                                             key={prompt}
+                                            href="/dashboard/chat"
                                             className="px-2.5 py-1 rounded-lg text-xs bg-white/[0.03] border border-white/[0.06] hover:border-primary/30 hover:text-primary transition-all"
                                         >
                                             {prompt}
-                                        </button>
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
@@ -281,29 +356,29 @@ export default function DashboardPage() {
 
                     {/* Activity Summary */}
                     <Card className="p-5 border-white/[0.06]">
-                        <h3 className="font-bold text-sm mb-3">This Week</h3>
+                        <h3 className="font-bold text-sm mb-3">Overview</h3>
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <span className="text-xs text-muted-foreground">Notes created</span>
-                                <span className="text-sm font-semibold">12</span>
+                                <span className="text-xs text-muted-foreground">Total items</span>
+                                <span className="text-sm font-semibold">{stats.total}</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-white/[0.04]">
                                 <motion.div
                                     className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
                                     initial={{ width: 0 }}
-                                    animate={{ width: '72%' }}
+                                    animate={{ width: `${Math.min(stats.total * 2, 100)}%` }}
                                     transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
                                 />
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-xs text-muted-foreground">AI interactions</span>
-                                <span className="text-sm font-semibold">28</span>
+                                <span className="text-xs text-muted-foreground">Added this week</span>
+                                <span className="text-sm font-semibold">{stats.recentCount}</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-white/[0.04]">
                                 <motion.div
                                     className="h-full rounded-full bg-gradient-to-r from-violet-500 to-pink-500"
                                     initial={{ width: 0 }}
-                                    animate={{ width: '85%' }}
+                                    animate={{ width: `${Math.min(stats.recentCount * 10, 100)}%` }}
                                     transition={{ duration: 1, delay: 1, ease: "easeOut" }}
                                 />
                             </div>

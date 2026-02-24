@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/lib/firebase/auth-context'
 import {
     Send,
     Loader2,
@@ -33,6 +34,7 @@ const suggestions = [
 ]
 
 export default function ChatPage() {
+    const { getIdToken } = useAuth()
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -62,9 +64,13 @@ export default function ChatPage() {
         setIsLoading(true)
 
         try {
+            const token = await getIdToken()
             const res = await fetch('/api/ai/query', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
                 body: JSON.stringify({ question: userMessage.content }),
             })
 

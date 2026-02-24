@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { AxonIcon } from '@/components/ui/icons'
+import { useAuth } from '@/lib/firebase/auth-context'
 import {
     LayoutDashboard,
     PlusCircle,
@@ -49,7 +50,18 @@ function getPageTitle(pathname: string): string {
 
 export function Sidebar() {
     const pathname = usePathname()
+    const router = useRouter()
+    const { user, signOut } = useAuth()
     const [collapsed, setCollapsed] = useState(false)
+
+    const handleSignOut = async () => {
+        await signOut()
+        router.push('/login')
+    }
+
+    const userInitial = user?.email?.charAt(0).toUpperCase() || 'U'
+    const userName = user?.displayName || user?.email?.split('@')[0] || 'User'
+    const userEmail = user?.email || ''
 
     return (
         <motion.aside
@@ -185,20 +197,20 @@ export function Sidebar() {
                 collapsed ? "flex justify-center" : ""
             )}>
                 {collapsed ? (
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-accent/20 flex items-center justify-center">
-                        <User className="w-5 h-5 text-primary" />
-                    </div>
+                    <button onClick={handleSignOut} className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-accent/20 flex items-center justify-center hover:from-red-500/20 hover:to-red-500/10 transition-colors" title="Sign out">
+                        <span className="text-sm font-bold text-primary">{userInitial}</span>
+                    </button>
                 ) : (
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-                            <span className="text-sm font-bold text-white">A</span>
+                            <span className="text-sm font-bold text-white">{userInitial}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold truncate">Axon User</p>
-                            <p className="text-xs text-muted-foreground truncate">Free Plan</p>
+                            <p className="text-sm font-semibold truncate">{userName}</p>
+                            <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
                         </div>
-                        <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
-                            <LogOut className="w-4 h-4 text-muted-foreground" />
+                        <button onClick={handleSignOut} className="p-2 hover:bg-red-500/10 rounded-lg transition-colors" title="Sign out">
+                            <LogOut className="w-4 h-4 text-muted-foreground hover:text-red-400" />
                         </button>
                     </div>
                 )}
