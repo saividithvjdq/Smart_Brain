@@ -35,6 +35,15 @@ export async function GET(request: NextRequest) {
             const user = await adminAuth.getUser(userId)
             await createUserProfile(userId, user.email || '', user.displayName || undefined)
             profile = await getUserProfile(userId)
+
+            // Send welcome email (fire-and-forget)
+            if (user.email) {
+                import('@/lib/email/welcome')
+                    .then(({ sendWelcomeEmail }) =>
+                        sendWelcomeEmail(user.email!, user.displayName || undefined)
+                    )
+                    .catch((err) => console.error('Welcome email failed:', err))
+            }
         }
 
         return NextResponse.json({ profile })
