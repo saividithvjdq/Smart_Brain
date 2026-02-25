@@ -20,6 +20,7 @@ import {
     Inbox
 } from 'lucide-react'
 import { AxonIcon } from '@/components/ui/icons'
+import { GlowingEffect } from '@/components/ui/glowing-effect'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -150,7 +151,8 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.08, duration: 0.6, ease }}
                     >
-                        <Card className="p-5 relative overflow-hidden border-white/[0.06] hover:border-white/[0.12] transition-all group cursor-pointer">
+                        <Card className="p-5 relative overflow-hidden border border-white/[0.06] bg-[#0B0914] group cursor-pointer transition-all">
+                            <GlowingEffect blur={15} spread={20} glow={true} variant="purple" inactiveZone={0.6} proximity={70} />
                             <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                             <div className="relative z-10">
                                 <div className="flex items-start justify-between mb-4">
@@ -158,13 +160,13 @@ export default function DashboardPage() {
                                         <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
                                     </div>
                                     {stats.recentCount > 0 && (
-                                        <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                                        <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 shadow-sm shadow-emerald-500/10">
                                             <TrendingUp className="w-3 h-3" />
                                             <span className="font-medium">+{stats.recentCount} this week</span>
                                         </div>
                                     )}
                                 </div>
-                                <div className="text-3xl font-bold mb-1 group-hover:text-white transition-colors">
+                                <div className="text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
                                     {loading ? (
                                         <div className="w-12 h-8 rounded bg-white/5 animate-pulse" />
                                     ) : (
@@ -236,7 +238,8 @@ export default function DashboardPage() {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.3 + index * 0.1, duration: 0.6, ease }}
                                     >
-                                        <Card className="p-5 border-white/[0.06] hover:border-primary/20 transition-all cursor-pointer group relative overflow-hidden">
+                                        <Card className="p-5 border-white/[0.06] bg-[#0B0914] transition-all cursor-pointer group relative overflow-hidden">
+                                            <GlowingEffect blur={10} spread={15} glow={true} variant="purple" inactiveZone={0.6} proximity={70} />
                                             <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <div className="flex items-start gap-4 relative z-10">
                                                 <div className={`p-2.5 rounded-xl border ${config.bg}`}>

@@ -7,6 +7,7 @@ import { Mail, Lock, ArrowRight, Eye, EyeOff, Brain } from 'lucide-react'
 import { AxonIcon } from '@/components/ui/icons'
 import Link from 'next/link'
 import { useAuth } from '@/lib/firebase/auth-context'
+import ShaderBackground from '@/components/ui/shader-background'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -27,6 +29,11 @@ export default function LoginPage() {
 
         try {
             if (isSignUp) {
+                if (password !== confirmPassword) {
+                    setError('Passwords do not match')
+                    setLoading(false)
+                    return
+                }
                 await signUp(email, password)
             } else {
                 await signIn(email, password)
@@ -63,10 +70,10 @@ export default function LoginPage() {
 
     return (
         <main className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">
-            {/* Background gradient orbs */}
-            <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
-            <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/15 rounded-full blur-[128px]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]" />
+            {/* Background Shader */}
+            <div className="absolute inset-0 mix-blend-screen opacity-40">
+                <ShaderBackground slow={true} />
+            </div>
 
             <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -76,11 +83,8 @@ export default function LoginPage() {
             >
                 {/* Logo */}
                 <Link href="/" className="flex items-center justify-center gap-3 mb-10 group">
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25"
-                    >
-                        <AxonIcon size={24} className="text-white" />
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                        <AxonIcon size={44} />
                     </motion.div>
                     <span className="text-2xl font-bold font-heading tracking-tight">Axon</span>
                 </Link>
@@ -150,6 +154,28 @@ export default function LoginPage() {
                             </div>
                         </div>
 
+                        {isSignUp && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3, ease }}
+                            >
+                                <label className="block text-sm font-medium mb-2 text-muted-foreground">Confirm Password</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Confirm your password"
+                                        required={isSignUp}
+                                        className="w-full pl-10 pr-12 py-3 rounded-xl bg-background/50 border border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all placeholder:text-muted-foreground/50"
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+
                         <motion.button
                             type="submit"
                             disabled={loading}
@@ -174,6 +200,7 @@ export default function LoginPage() {
                             onClick={() => {
                                 setIsSignUp(!isSignUp)
                                 setError('')
+                                setConfirmPassword('')
                             }}
                             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >

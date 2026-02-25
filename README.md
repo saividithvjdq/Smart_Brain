@@ -28,6 +28,8 @@ Inspired by modern SaaS applications like Linear, Vercel, and Scalepro:
 
 ## 🏗️ Architecture
 
+![System Architecture](/sys_arch.jpg)
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    CLIENT LAYER                              │

@@ -2,6 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Space_Grotesk, Sora } from 'next/font/google'
 import { AuthProvider } from '@/lib/firebase/auth-context'
+import { CommandPalette } from '@/components/ui/command-palette'
+import { AppShell } from '@/components/ui/app-shell'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -42,7 +44,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${spaceGrotesk.variable} ${sora.variable}`}>
       <body className="antialiased noise">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <AppShell>
+            {children}
+          </AppShell>
+          <CommandPalette />
+        </AuthProvider>
       </body>
     </html>
   )

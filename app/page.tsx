@@ -4,7 +4,6 @@ import {
   FeaturesSection,
   PlatformBenefitsSection,
   ChatInterfacesSection,
-  HowItWorksSection,
   CTASection,
   Footer
 } from '@/components/landing/sections'
@@ -19,7 +18,6 @@ export default function HomePage() {
       <FeaturesSection />
       <PlatformBenefitsSection />
       <ChatInterfacesSection />
-      <HowItWorksSection />
       <CTASection />
       <Footer />
     </main>

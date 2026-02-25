@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { AxonLogo } from './axon-logo'
 
 // Custom Axon Logo/Icon - Clean geometric minimalist design inspired by Scalepro
 // Features a stylized "A" shape with a dot element for modern professional look
@@ -17,64 +18,22 @@ export function AxonIcon({
 
     if (animated) {
         return (
-            <motion.svg
-                width={iconSize}
-                height={iconSize}
-                viewBox="0 0 24 24"
-                fill="none"
-                className={className}
+            <motion.div
+                className={`flex items-center justify-center ${className}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                whileHover={{ scale: 1.05 }}
             >
-                {/* Circle element - bottom left */}
-                <motion.circle
-                    cx="5.5"
-                    cy="18.5"
-                    r="3.5"
-                    fill="currentColor"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.4, ease: "backOut" }}
-                />
-                {/* Geometric "A" shape - angular modern design */}
-                <motion.path
-                    d="M5.5 15V6C5.5 4.5 6.5 3 8.5 3H16C18 3 19.5 4.5 19.5 6.5V18.5C19.5 20 18.5 21 17 21H12"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                />
-            </motion.svg>
+                <AxonLogo size={iconSize} showText={false} animated={animated} />
+            </motion.div>
         )
     }
 
     return (
-        <svg
-            width={iconSize}
-            height={iconSize}
-            viewBox="0 0 24 24"
-            fill="none"
-            className={className}
-        >
-            {/* Circle element - bottom left */}
-            <circle
-                cx="5.5"
-                cy="18.5"
-                r="3.5"
-                fill="currentColor"
-            />
-            {/* Geometric shape - modern angular design */}
-            <path
-                d="M5.5 15V6C5.5 4.5 6.5 3 8.5 3H16C18 3 19.5 4.5 19.5 6.5V18.5C19.5 20 18.5 21 17 21H12"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-            />
-        </svg>
+        <div className={`flex items-center justify-center ${className}`}>
+            <AxonLogo size={iconSize} showText={false} animated={animated} />
+        </div>
     )
 }
 

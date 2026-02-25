@@ -16,10 +16,10 @@ import {
     ChevronLeft,
     ChevronRight,
     LogOut,
-    Bell,
     User,
     Check
 } from 'lucide-react'
+import { SuccessIcon, NotificationIcon } from '@/components/ui/animated-state-icons'
 
 const navItems = [
     { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -79,8 +79,8 @@ export function Sidebar() {
                 collapsed ? "justify-center" : "justify-between"
             )}>
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
-                        <AxonIcon size={18} className="text-white" />
+                    <div className="shrink-0 group-hover:scale-105 transition-transform">
+                        <AxonIcon size={36} />
                     </div>
                     {!collapsed && (
                         <motion.span
@@ -168,7 +168,7 @@ export function Sidebar() {
                         <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl" />
                         <div className="relative flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                                <Check className="w-4 h-4 text-emerald-400" />
+                                <SuccessIcon size={16} className="text-emerald-400" />
                             </div>
                             <div>
                                 <p className="text-sm font-semibold text-emerald-400">Full Access</p>
@@ -236,9 +236,8 @@ export function DashboardHeader() {
                 <p className="text-xs text-muted-foreground">{greeting} - your knowledge base awaits</p>
             </div>
             <div className="flex items-center gap-3">
-                <button className="relative p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors">
-                    <Bell className="w-5 h-5 text-muted-foreground" />
-                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <button className="relative p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group">
+                    <NotificationIcon size={20} className="text-muted-foreground group-hover:text-foreground transition-colors" duration={4000} />
                 </button>
                 <Link
                     href="/dashboard/capture"

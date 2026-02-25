@@ -82,8 +82,8 @@ export function CursorTrail() {
             if (pointsRef.current.length > 0) {
                 const { x, y } = mouseRef.current
                 const mainGradient = ctx.createRadialGradient(x, y, 0, x, y, 80)
-                mainGradient.addColorStop(0, 'hsla(270, 85%, 65%, 0.12)')
-                mainGradient.addColorStop(0.5, 'hsla(250, 75%, 55%, 0.05)')
+                mainGradient.addColorStop(0, 'hsla(270, 85%, 65%, 0.06)')
+                mainGradient.addColorStop(0.5, 'hsla(250, 75%, 55%, 0.02)')
                 mainGradient.addColorStop(1, 'hsla(230, 65%, 45%, 0)')
                 ctx.fillStyle = mainGradient
                 ctx.fillRect(x - 80, y - 80, 160, 160)

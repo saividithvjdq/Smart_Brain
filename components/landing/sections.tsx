@@ -25,6 +25,11 @@ import {
     Lightbulb
 } from 'lucide-react'
 import { AxonIcon, VoiceWaveform, FloatAnimation } from '@/components/ui/icons'
+import ShaderBackground from '@/components/ui/shader-background'
+import { GlowingEffect } from '@/components/ui/glowing-effect'
+import { GradientButton } from '@/components/ui/gradient-button'
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button'
+
 
 // Smooth easing
 const ease = [0.16, 1, 0.3, 1] as const
@@ -44,9 +49,7 @@ export function Navbar() {
                 <div className="flex items-center justify-between px-6 py-3 rounded-2xl glass">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-primary/20">
-                            <AxonIcon size={18} className="text-white" />
-                        </div>
+                        <AxonIcon size={32} className="group-hover:scale-105 transition-transform" />
                         <span className="text-xl font-semibold tracking-tight">Axon</span>
                     </Link>
 
@@ -111,27 +114,8 @@ export function HeroSection() {
             className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-16"
         >
             {/* Background Effects */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* Dot pattern */}
-                <div className="absolute inset-0 dot-pattern" />
-
-                {/* Purple orbs */}
-                <motion.div
-                    animate={{
-                        x: [0, 30, 0],
-                        y: [0, 20, 0],
-                    }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="orb orb-purple w-[500px] h-[500px] top-0 right-1/4"
-                />
-                <motion.div
-                    animate={{
-                        x: [0, -20, 0],
-                        y: [0, 30, 0],
-                    }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="orb orb-violet w-[400px] h-[400px] bottom-1/4 left-1/4 opacity-30"
-                />
+            <div className="absolute inset-0 overflow-hidden mix-blend-screen opacity-60">
+                <ShaderBackground slow={false} />
             </div>
 
             {/* Content */}
@@ -209,17 +193,16 @@ export function HeroSection() {
                             transition={{ delay: 0.4, duration: 0.6, ease }}
                             className="flex flex-wrap items-center gap-4"
                         >
-                            <Link
-                                href="/dashboard"
-                                className="px-6 py-3.5 text-base font-medium btn-primary btn-shimmer rounded-xl flex items-center gap-2"
-                            >
-                                Get Started Free
-                                <ArrowRight className="w-4 h-4" />
-                            </Link>
-                            <button className="px-6 py-3.5 text-base font-medium btn-secondary rounded-xl flex items-center gap-2">
-                                <Play className="w-4 h-4" />
+                            <GradientButton asChild size="lg">
+                                <Link href="/dashboard">
+                                    Get Started Free
+                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                </Link>
+                            </GradientButton>
+                            <InteractiveHoverButton>
+                                <Play className="w-4 h-4 mr-2 inline" />
                                 Watch Demo
-                            </button>
+                            </InteractiveHoverButton>
                         </motion.div>
                     </div>
 
@@ -391,17 +374,6 @@ export function FeaturesSection() {
                             <br />
                             <span className="text-muted-foreground">Platform for the Modern Era</span>
                         </h2>
-
-                        {/* Large geometric logo */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.3, ease }}
-                            className="mt-8"
-                        >
-                            <AxonIcon size={120} className="text-white" />
-                        </motion.div>
                     </motion.div>
 
                     {/* Right side - Clean feature list */}
@@ -424,9 +396,10 @@ export function FeaturesSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: 0.3 + i * 0.1, ease }}
-                                className="group"
+                                className="group relative p-5 rounded-2xl bg-[#0B0914] border border-white/5"
                             >
-                                <div className="flex items-start gap-4">
+                                <GlowingEffect blur={15} spread={20} glow={true} variant="purple" />
+                                <div className="relative z-10 flex items-start gap-4">
                                     <div className="w-2 h-2 rounded-full bg-primary mt-2.5 group-hover:scale-150 transition-transform" />
                                     <div>
                                         <h3 className="text-xl font-semibold mb-1 group-hover:text-primary transition-colors">
@@ -571,14 +544,15 @@ export function PlatformBenefitsSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: 0.3 + index * 0.1, ease }}
-                                className="p-5 rounded-xl glass-card border border-white/5 hover:border-primary/20 transition-all group"
+                                className="relative p-5 rounded-xl border border-white/5 bg-[#0B0914] transition-all group"
                             >
-                                <div className="flex items-start gap-4">
+                                <GlowingEffect blur={10} spread={15} glow={true} variant="purple" inactiveZone={0.6} proximity={60} />
+                                <div className="relative z-10 flex items-start gap-4">
                                     <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
                                         <benefit.icon className="w-5 h-5 text-primary" />
                                     </div>
                                     <div>
-                                        <h3 className="text-base font-semibold mb-1">{benefit.title}</h3>
+                                        <h3 className="text-base font-semibold mb-1 group-hover:text-primary transition-colors">{benefit.title}</h3>
                                         <p className="text-sm text-muted-foreground">{benefit.description}</p>
                                     </div>
                                 </div>
@@ -808,37 +782,6 @@ export function ChatInterfacesSection() {
                             </div>
                         </motion.div>
 
-                        {/* Platform Cards Grid */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.4, ease }}
-                            className="grid grid-cols-3 gap-2"
-                        >
-                            {platforms.map((platform, index) => (
-                                <motion.div
-                                    key={platform.name}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.3, delay: 0.5 + index * 0.06 }}
-                                    whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.02] border ${platform.borderColor} cursor-pointer hover:bg-white/[0.04] transition-colors`}
-                                >
-                                    <div className={`w-8 h-8 rounded-lg ${platform.iconBg} flex items-center justify-center`}>
-                                        <platform.Icon className="w-4 h-4 text-white" />
-                                    </div>
-                                    <span className="text-[11px] font-medium text-white">{platform.name}</span>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${platform.status === 'Live'
-                                        ? 'bg-green-500/20 text-green-400'
-                                        : 'bg-white/10 text-muted-foreground'
-                                        }`}>
-                                        {platform.status}
-                                    </span>
-                                </motion.div>
-                            ))}
-                        </motion.div>
                     </div>
                 </div>
 
@@ -867,64 +810,8 @@ export function ChatInterfacesSection() {
     )
 }
 
-// How It Works Section
-const steps = [
-    { step: '01', title: 'Capture', description: 'Add notes, links, and insights with a single click' },
-    { step: '02', title: 'Process', description: 'AI generates summaries, tags, and embeddings automatically' },
-    { step: '03', title: 'Connect', description: 'Knowledge links together semantically, not just by folders' },
-    { step: '04', title: 'Query', description: 'Ask questions in natural language and get cited answers' },
-]
 
-export function HowItWorksSection() {
-    return (
-        <section id="how-it-works" className="relative py-32">
-            <div className="max-w-6xl mx-auto px-6">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-sm font-medium text-primary mb-4 block uppercase tracking-wider">How it works</span>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                        Simple by design,
-                        <br />
-                        <span className="text-muted-foreground">powerful by nature</span>
-                    </h2>
-                </motion.div>
 
-                {/* Steps */}
-                <div className="grid md:grid-cols-4 gap-6">
-                    {steps.map((step, index) => (
-                        <motion.div
-                            key={step.step}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1, ease }}
-                            className="relative text-center p-6"
-                        >
-                            {/* Step Number */}
-                            <div className="text-5xl font-bold text-primary/20 mb-4">
-                                {step.step}
-                            </div>
-
-                            {/* Connector Line */}
-                            {index < steps.length - 1 && (
-                                <div className="hidden md:block absolute top-10 left-1/2 w-full h-px bg-gradient-to-r from-primary/20 to-transparent" />
-                            )}
-
-                            <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                            <p className="text-muted-foreground text-sm">{step.description}</p>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    )
-}
 
 
 
@@ -959,13 +846,12 @@ export function CTASection() {
                     Start capturing, connecting, and querying your knowledge today.
                     Your second brain is waiting.
                 </p>
-                <Link
-                    href="/dashboard"
-                    className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium btn-primary btn-shimmer rounded-xl"
-                >
-                    Get Started Free
-                    <ArrowRight className="w-5 h-5" />
-                </Link>
+                <GradientButton asChild size="lg">
+                    <Link href="/dashboard">
+                        Get Started Free
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                    </Link>
+                </GradientButton>
             </motion.div>
         </section>
     )
@@ -978,9 +864,7 @@ export function Footer() {
             <div className="max-w-6xl mx-auto px-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                            <AxonIcon size={16} className="text-white" />
-                        </div>
+                        <AxonIcon size={28} />
                         <span className="font-semibold font-heading">Axon</span>
                     </div>
 
