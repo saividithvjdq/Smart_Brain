@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/lib/firebase/auth-context'
-import { PlusCircle, Search, MessageSquare, Sparkles, ArrowRight, X } from 'lucide-react'
+import { PlusCircle, Search, MessageSquare, Sparkles, ArrowRight, X, Command, Keyboard } from 'lucide-react'
 import { AxonIcon } from '@/components/ui/icons'
 import Link from 'next/link'
 
@@ -16,24 +16,31 @@ const steps = [
     },
     {
         title: 'Capture your thoughts',
-        description: 'Save notes, links, and insights. Axon auto-tags and summarizes everything.',
+        description: 'Save notes, links, and insights. Axon auto-tags and summarizes everything with AI.',
         icon: PlusCircle,
         color: 'from-blue-500 to-blue-600',
         action: { label: 'Try Capture', href: '/dashboard/capture' },
     },
     {
         title: 'Ask your AI',
-        description: 'Chat with your knowledge base. Axon finds relevant notes and answers questions.',
+        description: 'Chat with your knowledge base. Axon finds relevant notes and answers questions using RAG.',
         icon: MessageSquare,
         color: 'from-violet-500 to-violet-600',
         action: { label: 'Try Chat', href: '/dashboard/chat' },
     },
     {
         title: 'Search & connect',
-        description: 'Find anything instantly. Axon surfaces connections between your ideas.',
+        description: 'Semantic search across all your notes. Find ideas by meaning, not just keywords.',
         icon: Search,
         color: 'from-emerald-500 to-emerald-600',
         action: { label: 'Try Search', href: '/dashboard/search' },
+    },
+    {
+        title: 'Command Palette',
+        description: 'Press Ctrl+K (or ⌘K on Mac) to instantly navigate anywhere, search, or trigger AI actions.',
+        icon: Command,
+        color: 'from-orange-500 to-amber-600',
+        shortcut: 'Ctrl+K',
     },
 ]
 
@@ -147,6 +154,16 @@ export function OnboardingGuide() {
                             </Link>
                         )}
 
+                        {/* Keyboard shortcut badge */}
+                        {'shortcut' in step && step.shortcut && (
+                            <div className="mt-4 flex items-center gap-2">
+                                <kbd className="px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-sm font-mono font-medium text-white/80">
+                                    {step.shortcut}
+                                </kbd>
+                                <span className="text-xs text-muted-foreground">Try it now!</span>
+                            </div>
+                        )}
+
                         {/* Footer */}
                         <div className="flex items-center justify-between mt-8">
                             {/* Progress dots */}
@@ -156,10 +173,10 @@ export function OnboardingGuide() {
                                         key={i}
                                         onClick={() => setCurrentStep(i)}
                                         className={`w-2 h-2 rounded-full transition-all ${i === currentStep
-                                                ? 'bg-primary w-6'
-                                                : i < currentStep
-                                                    ? 'bg-primary/50'
-                                                    : 'bg-white/20'
+                                            ? 'bg-primary w-6'
+                                            : i < currentStep
+                                                ? 'bg-primary/50'
+                                                : 'bg-white/20'
                                             }`}
                                     />
                                 ))}

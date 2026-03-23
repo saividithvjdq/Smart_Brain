@@ -17,7 +17,10 @@ import {
     Search,
     MessageSquare,
     PlusCircle,
-    Inbox
+    Inbox,
+    Command,
+    Globe,
+    ArrowRight
 } from 'lucide-react'
 import { AxonIcon } from '@/components/ui/icons'
 import { GlowingEffect } from '@/components/ui/glowing-effect'
@@ -125,6 +128,16 @@ export default function DashboardPage() {
         { label: 'Total Tags', value: stats.tags, icon: Sparkles, gradient: 'from-violet-500/20 to-violet-600/5', iconBg: 'bg-violet-500/15', iconColor: 'text-violet-400' },
     ]
 
+    const gettingStartedCards = [
+        { title: 'Capture', description: 'Save notes, links, and insights with AI auto-tagging', icon: PlusCircle, href: '/dashboard/capture', gradient: 'from-blue-500/20 to-blue-600/5', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
+        { title: 'Search', description: 'Find anything with semantic search across your notes', icon: Search, href: '/dashboard/search', gradient: 'from-emerald-500/20 to-emerald-600/5', iconBg: 'bg-emerald-500/15', iconColor: 'text-emerald-400' },
+        { title: 'AI Chat', description: 'Ask questions — Axon answers from your knowledge', icon: MessageSquare, href: '/dashboard/chat', gradient: 'from-violet-500/20 to-violet-600/5', iconBg: 'bg-violet-500/15', iconColor: 'text-violet-400' },
+        { title: 'Command Palette', description: 'Press Ctrl+K to navigate, search, or trigger AI', icon: Command, href: '#', gradient: 'from-orange-500/20 to-amber-600/5', iconBg: 'bg-orange-500/15', iconColor: 'text-orange-400', shortcut: 'Ctrl+K' },
+        { title: 'Public API', description: 'Share your brain via API or embeddable widget', icon: Globe, href: '/docs', gradient: 'from-cyan-500/20 to-cyan-600/5', iconBg: 'bg-cyan-500/15', iconColor: 'text-cyan-400' },
+    ]
+
+    const isNewUser = !loading && stats.total === 0
+
     return (
         <div className="space-y-8 relative">
             {/* Background orbs */}
@@ -138,47 +151,92 @@ export default function DashboardPage() {
                 transition={{ duration: 0.6, ease }}
                 className="relative"
             >
-                <h1 className="text-3xl font-bold font-heading mb-1">Welcome back</h1>
-                <p className="text-muted-foreground">Here is an overview of your knowledge base activity.</p>
+                <h1 className="text-3xl font-bold font-heading mb-1">
+                    {isNewUser ? 'Getting Started' : 'Welcome back'}
+                </h1>
+                <p className="text-muted-foreground">
+                    {isNewUser
+                        ? 'Explore what Axon can do for you — your AI-powered second brain.'
+                        : 'Here is an overview of your knowledge base activity.'}
+                </p>
             </motion.div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {statCards.map((stat, index) => (
-                    <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.08, duration: 0.6, ease }}
-                    >
-                        <Card className="p-5 relative overflow-hidden border border-white/[0.06] bg-[#0B0914] group cursor-pointer transition-all">
-                            <GlowingEffect blur={15} spread={20} glow={true} variant="purple" inactiveZone={0.6} proximity={70} />
-                            <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                            <div className="relative z-10">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className={`p-2.5 rounded-xl ${stat.iconBg} border border-white/[0.06]`}>
-                                        <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
-                                    </div>
-                                    {stats.recentCount > 0 && (
-                                        <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 shadow-sm shadow-emerald-500/10">
-                                            <TrendingUp className="w-3 h-3" />
-                                            <span className="font-medium">+{stats.recentCount} this week</span>
+            {isNewUser ? (
+                /* ── Getting Started Guide (for new users with 0 items) ── */
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gettingStartedCards.map((card, index) => (
+                        <motion.div
+                            key={card.title}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.08, duration: 0.6, ease }}
+                        >
+                            <Link href={card.href}>
+                                <Card className="p-5 h-full relative overflow-hidden border border-white/[0.06] bg-[#0B0914] group cursor-pointer transition-all hover:border-primary/20">
+                                    <GlowingEffect blur={15} spread={20} glow={true} variant="purple" inactiveZone={0.6} proximity={70} />
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                    <div className="relative z-10">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className={`p-2.5 rounded-xl ${card.iconBg} border border-white/[0.06]`}>
+                                                <card.icon className={`w-5 h-5 ${card.iconColor}`} />
+                                            </div>
+                                            {card.shortcut && (
+                                                <kbd className="px-2 py-1 rounded-md bg-white/[0.06] border border-white/10 text-[11px] font-mono text-muted-foreground">
+                                                    {card.shortcut}
+                                                </kbd>
+                                            )}
                                         </div>
-                                    )}
+                                        <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">{card.title}</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{card.description}</p>
+                                        <div className="flex items-center gap-1 mt-3 text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <span>Explore</span>
+                                            <ArrowRight className="w-3 h-3" />
+                                        </div>
+                                    </div>
+                                </Card>
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            ) : (
+                /* ── Stats Grid (for returning users with items) ── */
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {statCards.map((stat, index) => (
+                        <motion.div
+                            key={stat.label}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.08, duration: 0.6, ease }}
+                        >
+                            <Card className="p-5 relative overflow-hidden border border-white/[0.06] bg-[#0B0914] group cursor-pointer transition-all">
+                                <GlowingEffect blur={15} spread={20} glow={true} variant="purple" inactiveZone={0.6} proximity={70} />
+                                <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                <div className="relative z-10">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className={`p-2.5 rounded-xl ${stat.iconBg} border border-white/[0.06]`}>
+                                            <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
+                                        </div>
+                                        {stats.recentCount > 0 && (
+                                            <div className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 shadow-sm shadow-emerald-500/10">
+                                                <TrendingUp className="w-3 h-3" />
+                                                <span className="font-medium">+{stats.recentCount} this week</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
+                                        {loading ? (
+                                            <div className="w-12 h-8 rounded bg-white/5 animate-pulse" />
+                                        ) : (
+                                            <AnimatedCounter target={stat.value} />
+                                        )}
+                                    </div>
+                                    <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                                 </div>
-                                <div className="text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
-                                    {loading ? (
-                                        <div className="w-12 h-8 rounded bg-white/5 animate-pulse" />
-                                    ) : (
-                                        <AnimatedCounter target={stat.value} />
-                                    )}
-                                </div>
-                                <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-                            </div>
-                        </Card>
-                    </motion.div>
-                ))}
-            </div>
+                            </Card>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
 
             {/* Main Content Grid */}
             <div className="grid lg:grid-cols-3 gap-6">

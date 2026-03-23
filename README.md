@@ -1,154 +1,214 @@
-# Axon ⚡
+<div align="center">
 
-**The operating system for your thoughts.**
+# ⬡ Axon
 
-An AI-powered knowledge management system that helps you capture, organize, and surface your knowledge using semantic search and AI-generated insights.
+**Your AI-Powered Second Brain**
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8)
+*Capture, organize, and recall your knowledge with AI — ask questions, get answers sourced from your own notes.*
+
+![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.12-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)
+![Tailwind](https://img.shields.io/badge/Tailwind_4-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white)
+
+</div>
+
+---
 
 ## ✨ Features
 
-- **📝 Smart Capture** - Save notes, links, and insights with AI-powered auto-tagging
-- **🔍 Semantic Search** - Find knowledge using natural language, not just keywords
-- **💬 Ask Axon** - Query your knowledge base conversationally with cited sources
-- **📊 Dashboard** - Beautiful overview of your collected knowledge
-- **🌐 Public API** - Rate-limited API for external integrations
-- **📦 Embeddable Widget** - Drop-in widget for any website
+| Feature | Description |
+|---------|-------------|
+| 📝 **Smart Capture** | Save notes, links, and insights with AI-powered auto-tagging |
+| 🤖 **AI-Powered Recall** | Ask questions and get answers sourced from your own notes |
+| ✨ **Auto-Summarize** | AI generates summaries so you can scan your knowledge fast |
+| 🔍 **Semantic Search** | Find knowledge using meaning, not just keywords (RAG + vector search) |
+| ⚡ **Command Palette** | Keyboard-first — press `Ctrl+K` to navigate anything |
+| 🌐 **Public API** | Rate-limited REST API for external integrations |
+| 🔐 **Firebase Auth** | Email/password, Google Sign-in, and passwordless magic links |
+| 📧 **Welcome Email** | Automated onboarding email for new users |
 
-## 🎨 Design
+---
 
-Inspired by modern SaaS applications like Linear, Vercel, and Scalepro:
-- **Dark theme** with pure black background (#050505)
-- **Lime accent** (#E5FF3D) for high contrast
-- **Glassmorphism** with subtle borders
-- **Smooth animations** powered by Framer Motion
+## 🏗 Architecture
 
-## 🏗️ Architecture
+```mermaid
+graph TB
+    subgraph Frontend["🖥 Frontend — Next.js 16"]
+        UI[React UI + Tailwind] --> APIRoutes[API Routes]
+        UI --> Auth[Firebase Auth]
+    end
+    
+    subgraph Backend["⚙️ Backend — Python FastAPI"]
+        Router[FastAPI Routers] --> RAG[RAG Engine]
+        Router --> MCP[MCP Tool Router]
+        RAG --> Embed[Embedding Service]
+        RAG --> LLM[LLM Providers]
+        LLM --> Groq[Groq — LLaMA 3.3]
+        LLM --> Gemini[Google Gemini]
+    end
+    
+    subgraph Data["💾 Data Layer"]
+        Firestore[(Firebase Firestore)]
+        ChromaDB[(ChromaDB Vectors)]
+    end
+    
+    APIRoutes --> Router
+    Router --> Firestore
+    Embed --> ChromaDB
+```
 
-![System Architecture](/sys_arch.jpg)
+---
+
+## 📁 Project Structure
+
+This is a **monorepo** — frontend and backend live together.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    CLIENT LAYER                              │
-│     Next.js 16 + React 19 + Tailwind + Framer Motion        │
-├─────────────────────────────────────────────────────────────┤
-│                     API LAYER                                │
-│         Next.js API Routes + Zod Validation                  │
-├─────────────────────────────────────────────────────────────┤
-│                      AI LAYER                                │
-│    RAG Engine + Context Detection + Auto-Summarization      │
-├─────────────────────────────────────────────────────────────┤
-│                    DATABASE LAYER                            │
-│        Supabase PostgreSQL + pgvector Embeddings            │
-└─────────────────────────────────────────────────────────────┘
+second-brain/
+│
+├── app/                       # Next.js pages & API routes
+│   ├── dashboard/             # Dashboard (knowledge CRUD, search, chat)
+│   ├── login/                 # Auth (email, Google, magic link)
+│   ├── api/                   # API routes (proxies to backend)
+│   └── docs/                  # Documentation page
+│
+├── components/                # React components
+│   ├── dashboard/             # Dashboard-specific components
+│   ├── landing/               # Landing page sections
+│   └── ui/                    # Reusable UI (shadcn + custom)
+│
+├── lib/                       # Shared utilities
+│   ├── ai/                    # AI providers, RAG, context engine
+│   ├── firebase/              # Firebase config, auth, Firestore
+│   └── email/                 # Nodemailer welcome email
+│
+├── backend/                   # 🐍 Python FastAPI backend
+│   ├── app/
+│   │   ├── main.py            # FastAPI entry point
+│   │   ├── config.py          # Pydantic Settings
+│   │   ├── models/            # Request/Response schemas
+│   │   ├── routers/           # API endpoints
+│   │   ├── services/          # LLM, RAG, Embeddings, MCP
+│   │   ├── db/                # Firebase + ChromaDB
+│   │   └── middleware/        # Auth + Rate limiting
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── README.md              # Backend-specific docs
+│
+├── package.json               # Frontend dependencies
+├── .env.example               # Environment template
+└── README.md                  # ← You are here
 ```
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- Supabase account
-- Groq API key
-- Google AI API key
+- **Node.js** 18+ and **npm**
+- **Python** 3.10+ (for backend)
+- **Firebase** project ([create one](https://console.firebase.google.com))
+- **Groq** API key ([get one](https://console.groq.com))
+- **Google AI** API key ([get one](https://aistudio.google.com/apikey))
 
-### Installation
+### Frontend Setup
 
 ```bash
-# Clone
+# Clone the repo
 git clone https://github.com/saividithvjdq/second-brain.git
 cd second-brain
 
-# Install
+# Install dependencies
 npm install
 
-# Configure
+# Configure environment
 cp .env.example .env
-# Add your API keys to .env
+# Edit .env with your Firebase + AI keys
 
-# Run
+# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open **[http://localhost:3000](http://localhost:3000)**
 
-### Supabase Setup
+### Backend Setup
 
-Run in SQL Editor:
+```bash
+# Navigate to backend
+cd backend
 
-```sql
-create extension if not exists vector;
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # Mac/Linux
 
-create table public.knowledge_items (
-  id uuid default gen_random_uuid() primary key,
-  user_id text default 'demo-user',
-  title text not null,
-  content text not null,
-  type text check (type in ('note', 'link', 'insight')) not null,
-  source_url text,
-  tags text[] default '{}',
-  summary text,
-  embedding vector(768),
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
+# Install dependencies
+pip install -r requirements.txt
 
-create index on knowledge_items 
-using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+# Configure environment
+# Edit backend/.env with your API keys
+
+# Start server
+uvicorn app.main:app --reload --port 8000
 ```
 
-## 📚 API Reference
-
-### Public API
-
-```http
-GET /api/public/brain/query?q=your+question
-```
-
-Rate limit: 10 requests/minute
-
-### Private API
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/knowledge` | GET/POST | Knowledge CRUD |
-| `/api/ai/query` | POST | RAG Q&A |
-| `/api/ai/auto-tag` | POST | Generate tags |
-| `/api/ai/summarize` | POST | Summarize content |
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS 4 + shadcn/ui
-- **Animation**: Framer Motion
-- **Database**: Supabase (PostgreSQL + pgvector)
-- **AI**: Groq (LLM) + Google Gemini (Embeddings)
-
-## 📁 Project Structure
-
-```
-axon/
-├── app/
-│   ├── dashboard/        # Dashboard pages
-│   ├── docs/             # Documentation
-│   ├── widget/           # Embeddable widget
-│   └── api/              # API routes
-├── components/
-│   ├── dashboard/        # Dashboard components
-│   ├── landing/          # Landing page sections
-│   └── ui/               # shadcn/ui components
-└── lib/
-    ├── ai/               # AI providers & RAG
-    └── supabase/         # Database clients
-```
-
-## 📄 License
-
-MIT © 2024
+API docs at **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
-Built with ⚡ for the Altibbe Full-Stack Engineering Internship
+## 🔌 API Reference
+
+### Public API (no auth)
+
+```http
+GET /public/brain/query?q=your+question+here
+```
+
+### Authenticated Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/ai/summarize` | AI-powered summarization |
+| `POST` | `/ai/auto-tag` | Generate tags for content |
+| `POST` | `/ai/query` | RAG query your knowledge base |
+| `GET` | `/knowledge/` | List knowledge items |
+| `POST` | `/knowledge/` | Create knowledge item |
+| `DELETE` | `/knowledge/{id}` | Delete knowledge item |
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| **UI** | shadcn/ui, Framer Motion, GSAP |
+| **Backend** | Python, FastAPI, Pydantic |
+| **AI** | Groq (LLaMA 3.3 70B), Google Gemini 1.5 Flash |
+| **RAG** | ChromaDB (vectors), all-MiniLM-L6-v2 (local embeddings) |
+| **User Context** | Personalized AI via user profiles stored in Firestore |
+| **Database** | Firebase Firestore |
+| **Auth** | Firebase Auth (Email, Google, Magic Link) |
+| **Email** | Nodemailer (Gmail SMTP) |
+| **Deploy** | Vercel (frontend) + Render (backend) |
+
+---
+
+## 🚀 Deployment
+
+### Frontend → Vercel
+Vercel auto-detects the Next.js config. Set environment variables in Dashboard.
+
+### Backend → Render
+Set **Root Directory** to `backend` in Render settings, or use the `render.yaml` blueprint.
+
+| Render Setting | Value |
+|---------------|-------|
+| Root Directory | `backend` |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Health Check | `/health` |

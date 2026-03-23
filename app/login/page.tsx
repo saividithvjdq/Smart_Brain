@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, Lock, ArrowRight, Eye, EyeOff, Brain, CheckCircle, Loader2 } from 'lucide-react'
@@ -11,7 +11,7 @@ import ShaderBackground from '@/components/ui/shader-background'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-export default function LoginPage() {
+function LoginPageContent() {
     const [isSignUp, setIsSignUp] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -399,5 +399,17 @@ export default function LoginPage() {
                 </p>
             </motion.div>
         </main>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+            </div>
+        }>
+            <LoginPageContent />
+        </Suspense>
     )
 }

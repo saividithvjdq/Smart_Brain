@@ -1,0 +1,91 @@
+﻿=======================================================
+  Axon Backend ù End-to-End Test
+=======================================================
+
+--- Test 1: ChromaDB Vector Store ---
+.\venv\Scripts\python 
+: Failed to send 
+telemetry event 
+ClientStartEvent: 
+capture() takes 1 
+positional argument 
+but 3 were given
+At line:1 char:1
++ 
+.\venv\Scripts\python 
+-u test_e2e.py 2>&1 | 
+Out-File -FilePath 
+result ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Failed to    
+ send ...ut 3 were    
+ given:String) []    
+, RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+Failed to send 
+telemetry event Client
+CreateCollectionEvent:
+ capture() takes 1 
+positional argument 
+but 3 were given
+  [PASS] Items added to ChromaDB
+Failed to send 
+telemetry event 
+CollectionQueryEvent: 
+capture() takes 1 
+positional argument 
+but 3 were given
+  [PASS] Semantic search works ù top result: 'React Hooks' (score: 0.659)
+Failed to send 
+telemetry event Collec
+tionDeleteEvent: 
+capture() takes 1 
+positional argument 
+but 3 were given
+Failed to send 
+telemetry event Collec
+tionDeleteEvent: 
+capture() takes 1 
+positional argument 
+but 3 were given
+  [PASS] Cleanup successful
+
+--- Test 2: Groq LLM Service ---
+  [PASS] LLM generation works ù response: 'Hello to you'
+
+--- Test 3: AI Summarize ---
+  [PASS] Summarize works ù 'FastAPI is a modern Python framework that offers key features such as automatic ...'
+
+--- Test 4: AI Auto-Tag ---
+  [PASS] Auto-tag works ù tags: ['fastapi', 'python', 'restapi', 'webdevelopment']
+
+--- Test 5: Firebase Firestore ---
+  [PASS] Created in Firestore ù ID: pQMPM56R1sIeiFiFsHjd
+  [FAIL] Firestore create/read
+         Error: 400 The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/second-brain-d678a/firestore/indexes?create_composite=Clpwcm9qZWN0cy9zZWNvbmQtYnJhaW4tZDY3OGEvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL2tub3dsZWRnZV9pdGVtcy9pbmRleGVzL18QARoKCgZ1c2VySWQQARoNCgljcmVhdGVkQXQQAhoMCghfX25hbWVfXxAC
+
+--- Test 6: Full RAG Pipeline ---
+Number of requested 
+results 5 is greater 
+than number of 
+elements in index 1, 
+updating n_results = 1
+  [PASS] RAG query answered from notes ù 'The test note is about the end-to-end pipeline verification, as stated in the "E...'
+  [PASS] Sources cited: ['E2E Test Note']
+Failed to send 
+telemetry event Collec
+tionDeleteEvent: 
+capture() takes 1 
+positional argument 
+but 3 were given
+  [PASS] Firestore cleanup done
+
+=======================================================
+  Results: 10/11 passed, 1 failed
+=======================================================

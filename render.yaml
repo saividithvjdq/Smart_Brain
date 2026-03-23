@@ -1,0 +1,24 @@
+# ── Render Blueprint ────────────────────────────────────────────
+# Deploy the Python backend from this monorepo to Render.
+# Render reads this file for one-click deploy.
+#
+# Frontend (Next.js) → Vercel (auto-detects from root)
+# Backend (Python)   → Render (uses this config)
+
+services:
+  - type: web
+    name: axon-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GOOGLE_AI_API_KEY
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://your-app.vercel.app,http://localhost:3000
+    healthCheckPath: /health

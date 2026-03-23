@@ -1,0 +1,19 @@
+# ── Core Framework ──────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic-settings==2.6.0
+python-multipart==0.0.12     # Form data / file uploads
+
+# ── AI Providers ────────────────────────────────────────────────
+groq==0.11.0                 # Groq API client (LLaMA)
+google-generativeai==0.8.0   # Google Gemini API
+
+# ── Firebase ────────────────────────────────────────────────────
+firebase-admin==6.6.0        # Firebase Admin SDK (auth, Firestore)
+
+# ── Vector Database ─────────────────────────────────────────────
+chromadb==0.5.18             # Local vector database for embeddings
+
+# ── HTTP Client ─────────────────────────────────────────────────
+httpx==0.27.2                # Pinned for groq SDK compatibility
+
